@@ -45,7 +45,7 @@ public class ProductController {
     }
 
     /**
-     * 특정 상품을 등록하는 기능
+     * 특정 상품을 목록에서 삭제하는 기능
      * @param productName 상품명
      */
     @DeleteMapping(path = "/delete")
