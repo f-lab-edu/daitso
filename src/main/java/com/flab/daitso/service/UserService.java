@@ -8,7 +8,6 @@ import com.flab.daitso.exception.NotExistingIdException;
 import com.flab.daitso.exception.WrongPasswordException;
 import com.flab.daitso.mapper.UserMapper;
 import com.flab.daitso.utils.SHA256Util;
-import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -16,31 +15,35 @@ import javax.validation.Valid;
 import java.util.Optional;
 
 @Service
-@RequiredArgsConstructor
 @Transactional(readOnly = true)
 public class UserService {
 
     private final UserMapper userMapper;
 
+    public UserService(UserMapper userMapper) {
+        this.userMapper = userMapper;
+    }
+
     @Transactional
-    public String join(@Valid UserRegister userRegister) {
+    public String signup(@Valid UserRegister userRegister) {
         validateDuplicateUser(userRegister);
         userRegister.setUserPassword(SHA256Util.getSHA256(userRegister.getUserPassword()));
-        User user = User.builder()
-                .id(userRegister.getId())
-                .userId(userRegister.getUserId())
+
+        User user = new User.Builder()
+                .userEmail(userRegister.getUserEmail())
                 .userPassword(userRegister.getUserPassword())
                 .name(userRegister.getName())
                 .phoneNumber(userRegister.getPhoneNumber())
                 .role(userRegister.getRole())
                 .registrationDate(userRegister.getRegistrationDate())
                 .build();
+
         userMapper.save(user);
-        return user.getUserId();
+        return user.getUserEmail();
     }
 
     private void validateDuplicateUser(UserRegister userRegister) {
-        User findUser = userMapper.findByUserId(userRegister.getUserId());
+        User findUser = userMapper.findByUserId(userRegister.getUserEmail());
         Optional<User> optionalUser = Optional.ofNullable(findUser);
         if (optionalUser.isPresent()) {
             throw new ExistingIdException();
@@ -51,8 +54,8 @@ public class UserService {
         return checkUser(userLoginRequest);
     }
 
-    private void checkExistingId(String userId) {
-        User byUserId = userMapper.findByUserId(userId);
+    private void checkExistingId(String userEmail) {
+        User byUserId = userMapper.findByUserId(userEmail);
         Optional<User> findUserId = Optional.ofNullable(byUserId);
         if (!findUserId.isPresent()) {
             throw new NotExistingIdException();
@@ -69,5 +72,4 @@ public class UserService {
         }
         return byUserIdAndUserPassword;
     }
-
 }

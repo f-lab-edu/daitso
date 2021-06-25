@@ -1,10 +1,5 @@
 package com.flab.daitso.dto.user;
 
-import lombok.Getter;
-import lombok.RequiredArgsConstructor;
-
-@Getter
-@RequiredArgsConstructor
 public enum Role {
 
     GUEST("ROLE_GUEST", "비회원 사용자"),
@@ -14,4 +9,17 @@ public enum Role {
 
     private final String key;
     private final String title;
+
+    Role(String key, String title) {
+        this.key = key;
+        this.title = title;
+    }
+
+    public String getKey() {
+        return key;
+    }
+
+    public String getTitle() {
+        return title;
+    }
 }
