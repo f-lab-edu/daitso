@@ -35,6 +35,8 @@ public class UserRegister {
     @Pattern(regexp="^010-(\\d{4})-(\\d{4})$", message = "전화번호는 '-'를 포함하여 12자리로 입력하세요.")
     private String phoneNumber;
 
+    private Role role = Role.USER;
+
     private String registrationDate = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd"));
 
     public UserRegister(String userId, String userPassword, String name, String phoneNumber) {
