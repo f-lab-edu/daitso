@@ -64,7 +64,6 @@ public class UserService {
 
     private User checkUser(UserLoginRequest userLoginRequest) {
         checkExistingId(userLoginRequest.getUserId());
-        userLoginRequest.setUserPassword(SHA256Util.getSHA256(userLoginRequest.getUserPassword()));
         User byUserIdAndUserPassword = userMapper.findByUserIdAndUserPassword(userLoginRequest);
         Optional<User> findUser = Optional.ofNullable(byUserIdAndUserPassword);
         if (!findUser.isPresent()) {
