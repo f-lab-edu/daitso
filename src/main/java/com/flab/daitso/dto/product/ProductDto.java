@@ -1,17 +1,15 @@
 package com.flab.daitso.dto.product;
 
-import lombok.Getter;
-import lombok.Setter;
-import lombok.ToString;
-
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 
-//@Getter
-//@Setter
-//@ToString
+
 public class ProductDto {
+
+    private int pid;
 
     @NotNull(message = "categoryId can't be null")//  how to restrain..?
     private int categoryId;
@@ -26,9 +24,21 @@ public class ProductDto {
     @NotNull(message = "content can't be null")
     private String content;
 
-    private String createdAt;
-    private String updatedAt;
+    private LocalDateTime createdAt;
+    private LocalDateTime updatedAt;
     private int quantity;
+
+    public ProductDto(){
+
+    }
+
+    public int getPid() {
+        return pid;
+    }
+
+    public void setPid(int pid) {
+        this.pid = pid;
+    }
 
     public int getCategoryId() {
         return categoryId;
@@ -62,19 +72,19 @@ public class ProductDto {
         this.content = content;
     }
 
-    public String getCreatedAt() {
+    public LocalDateTime getCreatedAt() {
         return createdAt;
     }
 
-    public void setCreatedAt(String createdAt) {
+    public void setCreatedAt(LocalDateTime createdAt) {
         this.createdAt = createdAt;
     }
 
-    public String getUpdatedAt() {
+    public LocalDateTime getUpdatedAt() {
         return updatedAt;
     }
 
-    public void setUpdatedAt(String updatedAt) {
+    public void setUpdatedAt(LocalDateTime updatedAt) {
         this.updatedAt = updatedAt;
     }
 

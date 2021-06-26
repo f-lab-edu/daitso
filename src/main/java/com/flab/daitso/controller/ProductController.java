@@ -20,25 +20,25 @@ public class ProductController {
      * 하나의 특정 카테고리에 속한 모든 상품 검색 기능
      * @param categoryId 카테고리 아이디
      */
-    @GetMapping(path = "{categoryId}")
+    @GetMapping("{categoryId}")
     public List<ProductDto> getProducts(@PathVariable int categoryId) throws Exception {
         return productService.getProducts(categoryId);
     }
 
     /**
      * 하나의 특정 상품을 상품명으로 검색하는 기능
-     * @param productName 상품명
+     * @param pid 상품아이디
      */
-    @GetMapping(path = "/find")
-    public ProductDto getProduct(@RequestParam String productName) throws Exception {
-        return productService.getProduct(productName);
+    @GetMapping("/find/{pid}")
+    public ProductDto getProduct(@PathVariable int pid) throws Exception {
+        return productService.getProduct(pid);
     }
 
     /**
      * 특정 상품을 등록하는 기능
      * @param productDto 상품 정보
      */
-    @PostMapping
+    @PostMapping("/add")
     public void registerProduct(@Valid @RequestBody ProductDto productDto) throws Exception {
         System.out.println(productDto.toString());
         productService.registerProduct(productDto);
@@ -46,11 +46,11 @@ public class ProductController {
 
     /**
      * 특정 상품을 목록에서 삭제하는 기능
-     * @param productName 상품명
+     * @param pid 상품아이디
      */
-    @DeleteMapping(path = "/delete")
-    public void deleteProduct(@RequestParam String productName) throws Exception {
-        productService.deleteProduct(productName);
+    @DeleteMapping("/delete/{pid}")
+    public void deleteProduct(@PathVariable int pid) throws Exception {
+        productService.deleteProduct(pid);
     }
 
 }
