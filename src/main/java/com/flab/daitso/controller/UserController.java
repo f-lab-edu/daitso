@@ -20,7 +20,7 @@ public class UserController {
     }
 
     @PostMapping("/signup")
-    public void join(@RequestBody @Valid UserRegister userRegister) {
+    public void signup(@RequestBody @Valid UserRegister userRegister) {
         userService.signup(userRegister);
     }
 }

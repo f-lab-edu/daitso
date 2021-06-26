@@ -10,13 +10,16 @@ import java.time.LocalDateTime;
 
 public class UserRegister {
 
+    public UserRegister() {
+    }
+
     @NotBlank(message = "Email을 입력하세요.")
     @Email(message = "유효하지 않은 이메일 형식입니다.")
     private String userEmail;
 
     @NotBlank(message = "비밀번호를 입력하세요.")
-    @Pattern(regexp = "^(?=.*[0-9])(?=.*[a-zA-Z])(?=.*[`~!@#$%^&*+=(),._?\":{}|<>/-])(?=\\S+$).{8,20}$",
-            message = "비밀번호는 숫자, 특수문자, 영문 대/소문자가 모두 포함된 8 ~ 20자로 입력하세요.")
+    @Pattern(regexp = "^(?=.*[0-9])(?=.*[a-zA-Z])(?=.*[`~!@#$%^&*+=(),._?\":{}|<>/-])(?=\\S+$).{8,15}$",
+            message = "비밀번호는 숫자,특수문자,영문 대/소문자가 모두 포함된 8~15자리로 입력하세요.")
     private String userPassword;
 
     @NotBlank(message = "이름을 입력하세요.")
@@ -34,13 +37,9 @@ public class UserRegister {
 
     public UserRegister(String userEmail, String userPassword, String name, String phoneNumber) {
         this.userEmail = userEmail;
-        this.userPassword = encryptPassword(userPassword);
+        this.userPassword = userPassword;
         this.name = name;
         this.phoneNumber = phoneNumber;
-    }
-
-    private String encryptPassword(String userPassword) {
-        return SHA256Util.getSHA256(userPassword);
     }
 
     public String getUserEmail() {
@@ -65,9 +64,5 @@ public class UserRegister {
 
     public LocalDateTime getRegistrationDate() {
         return registrationDate;
-    }
-
-    public void setUserPassword(String userPassword) {
-        this.userPassword = userPassword;
     }
 }

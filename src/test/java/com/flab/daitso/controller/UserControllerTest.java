@@ -16,6 +16,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.context.WebApplicationContext;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @ExtendWith(SpringExtension.class)
@@ -42,11 +43,12 @@ class UserControllerTest {
 
     @Test
     public void 회원가입() throws Exception {
-        UserRegister userRegister = new UserRegister("test11@naver.com", "1q2w3e4r!", "test", "010-1111-2222");
+        UserRegister userRegister = new UserRegister("test11@naver.com", "!1q2w3e4r!", "test", "010-1111-2222");
 
         mvc.perform(post("/users/signup")
                 .content(objectMapper.writeValueAsString(userRegister))
                 .contentType(MediaType.APPLICATION_JSON))
-                .andExpect(status().isOk());
+                .andExpect(status().isOk())
+                .andDo(print());
     }
 }

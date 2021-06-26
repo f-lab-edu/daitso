@@ -27,11 +27,11 @@ public class UserService {
     @Transactional
     public String signup(@Valid UserRegister userRegister) {
         validateDuplicateUser(userRegister);
-        userRegister.setUserPassword(SHA256Util.getSHA256(userRegister.getUserPassword()));
+        String encryptedPassword = SHA256Util.getSHA256(userRegister.getUserPassword());
 
         User user = new User.Builder()
                 .userEmail(userRegister.getUserEmail())
-                .userPassword(userRegister.getUserPassword())
+                .userPassword(encryptedPassword)
                 .name(userRegister.getName())
                 .phoneNumber(userRegister.getPhoneNumber())
                 .role(userRegister.getRole())
