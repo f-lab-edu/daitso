@@ -40,7 +40,6 @@ public class ProductController {
      */
     @PostMapping("/add")
     public void registerProduct(@Valid @RequestBody ProductDto productDto) throws Exception {
-        System.out.println(productDto.toString());
         productService.registerProduct(productDto);
     }
 
