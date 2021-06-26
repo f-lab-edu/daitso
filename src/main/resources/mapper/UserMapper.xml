@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.flab.daitso.mapper.UserMapper">
+    <insert id="save" parameterType="com.flab.daitso.dto.user.UserRegister" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO user(userEmail, userPassword, name, phoneNumber, role, registrationDate)
+        VALUES (#{userEmail}, #{userPassword}, #{name}, #{phoneNumber}, #{role}, #{registrationDate})
+    </insert>
+
+    <select id="findByUserId" resultType="com.flab.daitso.dto.user.User">
+        SELECT *
+        FROM user
+        WHERE userEmail = #{userEmail}
+    </select>
+
+    <select id="findByUserIdAndUserPassword" resultType="com.flab.daitso.dto.user.User">
+        SELECT *
+        FROM user
+        WHERE userEmail = #{userEmail}
+        AND userPassword = #{userPassword}
+    </select>
+</mapper>
