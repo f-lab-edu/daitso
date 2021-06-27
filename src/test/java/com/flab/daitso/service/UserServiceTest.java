@@ -35,7 +35,7 @@ class UserServiceTest {
         UserRegister userRegister = new UserRegister("test1", "1q2w3e4r!", "test", "010-1111-2222");
         String userEmail = userService.signup(userRegister);
 
-        assertThat(userEmail).isEqualTo(userMapper.findByUserId("test1").getUserEmail());
+        assertThat(userEmail).isEqualTo(userMapper.findByUserEmail("test1").getUserEmail());
     }
 
     @Test
@@ -61,7 +61,7 @@ class UserServiceTest {
         User login = userService.login(loginRequest);
 
         assertThat(login.getUserEmail()).isEqualTo(userEmail);
-        assertThat(login.getUserEmail()).isEqualTo(userMapper.findByUserIdAndUserPassword(loginRequest).getUserEmail());
+        assertThat(login.getUserEmail()).isEqualTo(userMapper.findByUserEmailAndUserPassword(loginRequest).getUserEmail());
     }
 
     @Test

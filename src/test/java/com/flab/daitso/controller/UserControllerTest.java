@@ -43,7 +43,7 @@ class UserControllerTest {
 
     @Test
     public void 회원가입() throws Exception {
-        UserRegister userRegister = new UserRegister("test11@naver.com", "!1q2w3e4r!", "test", "010-1111-2222");
+        UserRegister userRegister = new UserRegister("test12@naver.com", "!1q2w3e4r!", "test", "010-1111-2222");
 
         mvc.perform(post("/users/signup")
                 .content(objectMapper.writeValueAsString(userRegister))
