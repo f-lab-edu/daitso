@@ -6,13 +6,13 @@
         VALUES (#{userEmail}, #{userPassword}, #{name}, #{phoneNumber}, #{role}, #{registrationDate})
     </insert>
 
-    <select id="findByUserId" resultType="com.flab.daitso.dto.user.User">
+    <select id="findByUserEmail" resultType="com.flab.daitso.dto.user.User">
         SELECT *
         FROM user
         WHERE userEmail = #{userEmail}
     </select>
 
-    <select id="findByUserIdAndUserPassword" resultType="com.flab.daitso.dto.user.User">
+    <select id="findByUserEmailAndUserPassword" resultType="com.flab.daitso.dto.user.User">
         SELECT *
         FROM user
         WHERE userEmail = #{userEmail}

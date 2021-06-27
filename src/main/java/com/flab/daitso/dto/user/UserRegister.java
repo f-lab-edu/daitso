@@ -1,6 +1,5 @@
 package com.flab.daitso.dto.user;
 
-import com.flab.daitso.utils.SHA256Util;
 import org.hibernate.validator.constraints.Length;
 
 import javax.validation.constraints.Email;

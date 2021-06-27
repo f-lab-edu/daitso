@@ -1,11 +1,12 @@
 package com.flab.daitso.dto.user;
 
-import com.flab.daitso.utils.SHA256Util;
-
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
 
 public class UserLoginRequest {
+
+    public UserLoginRequest() {
+    }
 
     @Email
     @NotBlank(message = "Email을 입력해주세요.")
@@ -16,14 +17,10 @@ public class UserLoginRequest {
 
     public UserLoginRequest(String userEmail, String userPassword) {
         this.userEmail = userEmail;
-        this.userPassword = encryptPassword(userPassword);
+        this.userPassword = userPassword;
     }
 
-    private String encryptPassword(String userPassword) {
-        return SHA256Util.getSHA256(userPassword);
-    }
-
-    public String getUserId() {
+    public String getUserEmail() {
         return userEmail;
     }
 

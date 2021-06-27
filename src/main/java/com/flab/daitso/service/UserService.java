@@ -43,7 +43,7 @@ public class UserService {
     }
 
     private void validateDuplicateUser(UserRegister userRegister) {
-        User findUser = userMapper.findByUserId(userRegister.getUserEmail());
+        User findUser = userMapper.findByUserEmail(userRegister.getUserEmail());
         Optional<User> optionalUser = Optional.ofNullable(findUser);
         if (optionalUser.isPresent()) {
             throw new ExistingIdException();
@@ -55,16 +55,19 @@ public class UserService {
     }
 
     private void checkExistingId(String userEmail) {
-        User byUserId = userMapper.findByUserId(userEmail);
-        Optional<User> findUserId = Optional.ofNullable(byUserId);
+        User byUserEmail = userMapper.findByUserEmail(userEmail);
+        Optional<User> findUserId = Optional.ofNullable(byUserEmail);
         if (!findUserId.isPresent()) {
             throw new NotExistingIdException();
         }
     }
 
     private User checkUser(UserLoginRequest userLoginRequest) {
-        checkExistingId(userLoginRequest.getUserId());
-        User byUserIdAndUserPassword = userMapper.findByUserIdAndUserPassword(userLoginRequest);
+        checkExistingId(userLoginRequest.getUserEmail());
+        String encryptedPassword = SHA256Util.getSHA256(userLoginRequest.getUserPassword());
+
+        userLoginRequest.setUserPassword(encryptedPassword);
+        User byUserIdAndUserPassword = userMapper.findByUserEmailAndUserPassword(userLoginRequest);
         Optional<User> findUser = Optional.ofNullable(byUserIdAndUserPassword);
         if (!findUser.isPresent()) {
             throw new WrongPasswordException();
