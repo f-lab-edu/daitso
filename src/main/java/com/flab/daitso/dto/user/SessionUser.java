@@ -18,7 +18,7 @@ public class SessionUser implements Serializable {
         return userEmail;
     }
 
-    public Stri성ng getName() {
+    public String getName() {
         return name;
     }
 
