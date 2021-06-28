@@ -5,10 +5,7 @@ import com.flab.daitso.dto.user.User;
 import com.flab.daitso.dto.user.UserLoginRequest;
 import com.flab.daitso.exception.UserNotLoginException;
 import com.flab.daitso.service.UserService;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
@@ -41,6 +38,7 @@ public class UserLoginController {
             throw new UserNotLoginException();
         }
         session.removeAttribute("USER_ID");
+        session.removeAttribute("USER");
     }
 
     public boolean isLogin(HttpSession httpSession) {
