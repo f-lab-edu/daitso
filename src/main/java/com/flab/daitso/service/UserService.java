@@ -54,24 +54,24 @@ public class UserService {
         return checkUser(userLoginRequest);
     }
 
-    private void checkExistingId(String userEmail) {
+    private void checkExistingEmail(String userEmail) {
         User byUserEmail = userMapper.findByUserEmail(userEmail);
-        Optional<User> findUserId = Optional.ofNullable(byUserEmail);
-        if (!findUserId.isPresent()) {
+        Optional<User> findUserEmail = Optional.ofNullable(byUserEmail);
+        if (!findUserEmail.isPresent()) {
             throw new NotExistingIdException();
         }
     }
 
     private User checkUser(UserLoginRequest userLoginRequest) {
-        checkExistingId(userLoginRequest.getUserEmail());
+        checkExistingEmail(userLoginRequest.getUserEmail());
         String encryptedPassword = SHA256Util.getSHA256(userLoginRequest.getUserPassword());
 
         userLoginRequest.setUserPassword(encryptedPassword);
-        User byUserIdAndUserPassword = userMapper.findByUserEmailAndUserPassword(userLoginRequest);
-        Optional<User> findUser = Optional.ofNullable(byUserIdAndUserPassword);
+        User byUserEmailAndUserPassword = userMapper.findByUserEmailAndUserPassword(userLoginRequest);
+        Optional<User> findUser = Optional.ofNullable(byUserEmailAndUserPassword);
         if (!findUser.isPresent()) {
             throw new WrongPasswordException();
         }
-        return byUserIdAndUserPassword;
+        return byUserEmailAndUserPassword;
     }
 }
