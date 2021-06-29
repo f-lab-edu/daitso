@@ -46,7 +46,7 @@ public class ProductService {
             productMapper.increaseQuantity(product.get().getPid());
         }
         else {
-        productMapper.registerProduct(productDto);
+            productMapper.registerProduct(productDto);
         }
     }
 

@@ -2,8 +2,8 @@ package com.flab.daitso.error;
 
 public class ErrorObject {
 
-    private String message;
-    private String exceptionType;
+    private final String message;
+    private final String exceptionType;
 
     public ErrorObject(Exception e){
         this.message = e.getLocalizedMessage();

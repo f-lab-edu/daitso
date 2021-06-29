@@ -1,5 +1,7 @@
 package com.flab.daitso.dto.product;
 
+import com.flab.daitso.dto.order.OrderDto;
+
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
@@ -27,6 +29,7 @@ public class ProductDto {
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
     private int quantity;
+
 
     public ProductDto(){
 
@@ -108,4 +111,5 @@ public class ProductDto {
                 ", quantity=" + quantity +
                 '}';
     }
+
 }

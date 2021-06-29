@@ -1,6 +1,9 @@
 package com.flab.daitso.controller;
 
 import com.flab.daitso.dto.order.OrderDto;
+import com.flab.daitso.dto.order.OrderRequestDto;
+import com.flab.daitso.dto.product.ProductDto;
+import com.flab.daitso.service.OrderService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -10,22 +13,27 @@ import org.springframework.web.bind.annotation.RestController;
 import javax.validation.Valid;
 
 @RestController
-@RequestMapping(path = "daitso/order")
+@RequestMapping("daitso/order")
 public class OrderController {
 
+    @Autowired
+    OrderService orderService;
 
-    @PostMapping(path = "/normal")
-    public void orderNormal(@Valid @RequestBody OrderDto orderDto){
+
+    @PostMapping("/normal")
+    public OrderDto orderNormal(@RequestBody ProductDto productDto, @RequestBody OrderRequestDto orderRequestDto){
+
+        return orderService.orderNormal(productDto, orderRequestDto);
 
     }
 
-    @PostMapping(path = "/rocket")
-    public void orderRocket(@Valid @RequestBody OrderDto orderDto){
+    @PostMapping("/rocket")
+    public void orderRocket(@RequestBody OrderDto orderDto){
 
     }
 
-    @PostMapping(path = "/wow")
-    public void orderWow(@Valid @RequestBody OrderDto orderDto){
+    @PostMapping("/wow")
+    public void orderWow(@RequestBody OrderDto orderDto){
 
     }
 

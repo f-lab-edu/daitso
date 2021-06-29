@@ -25,3 +25,4 @@ public interface ProductMapper {
     // 해당 상품 아이디에 해당하는 상품의 수량을 1 증가시킨다.
     void increaseQuantity(int pid);
 }
+
