@@ -1,4 +1,4 @@
-package com.flab.daitso.exception;
+package com.flab.daitso.error.exception;
 
 public class UserNotLoginException extends RuntimeException {
 
