@@ -3,7 +3,7 @@ package com.flab.daitso.controller;
 import com.flab.daitso.dto.user.SessionUser;
 import com.flab.daitso.dto.user.User;
 import com.flab.daitso.dto.user.UserLoginRequest;
-import com.flab.daitso.exception.UserNotLoginException;
+import com.flab.daitso.error.exception.UserNotLoginException;
 import com.flab.daitso.service.UserService;
 import org.springframework.web.bind.annotation.*;
 
