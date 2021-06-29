@@ -3,6 +3,7 @@ package com.flab.daitso.controller;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.flab.daitso.dto.user.UserRegister;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -42,8 +43,9 @@ class UserControllerTest {
     }
 
     @Test
+    @DisplayName("정상적인_회원가입")
     public void 회원가입() throws Exception {
-        UserRegister userRegister = new UserRegister("test12@naver.com", "!1q2w3e4r!", "test", "010-1111-2222");
+        UserRegister userRegister = new UserRegister("test666@naver.com", "!1q2w3e4r!", "test", "010-1111-2222");
 
         mvc.perform(post("/users/signup")
                 .content(objectMapper.writeValueAsString(userRegister))
