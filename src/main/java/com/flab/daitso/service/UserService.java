@@ -3,16 +3,15 @@ package com.flab.daitso.service;
 import com.flab.daitso.dto.user.User;
 import com.flab.daitso.dto.user.UserLoginRequest;
 import com.flab.daitso.dto.user.UserRegister;
-import com.flab.daitso.exception.ExistingIdException;
-import com.flab.daitso.exception.NotExistingIdException;
-import com.flab.daitso.exception.WrongPasswordException;
+import com.flab.daitso.error.exception.ExistingIdException;
+import com.flab.daitso.error.exception.NotExistingIdException;
+import com.flab.daitso.error.exception.WrongPasswordException;
 import com.flab.daitso.mapper.UserMapper;
 import com.flab.daitso.utils.SHA256Util;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.validation.Valid;
-import java.util.Optional;
 
 @Service
 @Transactional(readOnly = true)
@@ -44,8 +43,7 @@ public class UserService {
 
     private void validateDuplicateUser(UserRegister userRegister) {
         User findUser = userMapper.findByUserEmail(userRegister.getUserEmail());
-        Optional<User> optionalUser = Optional.ofNullable(findUser);
-        if (optionalUser.isPresent()) {
+        if (findUser != null) {
             throw new ExistingIdException();
         }
     }
@@ -56,8 +54,7 @@ public class UserService {
 
     private void checkExistingEmail(String userEmail) {
         User byUserEmail = userMapper.findByUserEmail(userEmail);
-        Optional<User> findUserEmail = Optional.ofNullable(byUserEmail);
-        if (!findUserEmail.isPresent()) {
+        if (byUserEmail == null) {
             throw new NotExistingIdException();
         }
     }
@@ -68,8 +65,7 @@ public class UserService {
 
         userLoginRequest.setUserPassword(encryptedPassword);
         User byUserEmailAndUserPassword = userMapper.findByUserEmailAndUserPassword(userLoginRequest);
-        Optional<User> findUser = Optional.ofNullable(byUserEmailAndUserPassword);
-        if (!findUser.isPresent()) {
+        if (byUserEmailAndUserPassword == null) {
             throw new WrongPasswordException();
         }
         return byUserEmailAndUserPassword;
