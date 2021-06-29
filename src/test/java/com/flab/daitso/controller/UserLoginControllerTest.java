@@ -1,10 +1,10 @@
 package com.flab.daitso.controller;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.flab.daitso.dto.user.UserLoginRequest;
 import com.flab.daitso.dto.user.UserRegister;
 import com.flab.daitso.service.UserService;
+import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -20,9 +20,9 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.context.WebApplicationContext;
 
-import static org.junit.jupiter.api.Assertions.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @ExtendWith(SpringExtension.class)
@@ -64,6 +64,22 @@ class UserLoginControllerTest {
                 .content(objectMapper.writeValueAsString(userLoginRequest))
                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
+                .andDo(print());
+    }
+
+    @Test
+    @DisplayName("존재하지 않는 아이디 로그인 실패 테스트")
+    public void 로그인_실패_테스트() throws Exception {
+        String userEmail = "test000@naver.com";
+        String userPassword = "1q2w3e4r!";
+
+        UserLoginRequest userLoginRequest = new UserLoginRequest(userEmail, userPassword);
+
+        mvc.perform(post("/users/login")
+                .content(objectMapper.writeValueAsString(userLoginRequest))
+                .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isBadRequest())
+                .andExpect(content().string("NotExistingIdException"))
                 .andDo(print());
     }
 
