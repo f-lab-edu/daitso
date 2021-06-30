@@ -1,5 +1,5 @@
 create table product(
-   pid INT NOT NULL AUTO_INCREMENT,
+   pid INT UNSIGNED NOT NULL AUTO_INCREMENT,
    categoryId INT NOT NULL,
    name VARCHAR(30) NOT NULL,
    price VARCHAR(40) NOT NULL,

@@ -1,4 +1,4 @@
-package com.flab.daitso.error.exception;
+package com.flab.daitso.error.exception.user;
 
 public class NotExistingIdException extends RuntimeException {
 

@@ -3,7 +3,7 @@
 
 <mapper namespace="com.flab.daitso.mapper.ProductMapper">
 
-    <select id="findProductsByCategoryId" parameterType="int" resultType="com.flab.daitso.dto.product.ProductDto">
+    <select id="findByCategoryId" parameterType="int" resultType="com.flab.daitso.dto.product.ProductDto">
         select pid,
                categoryId,
                name,
@@ -17,7 +17,21 @@
           and categoryId = #{id}
     </select>
 
-    <select id="findProductById" parameterType="int" resultType="com.flab.daitso.dto.product.ProductDto">
+    <select id="findByName" parameterType="String" resultType="com.flab.daitso.dto.product.ProductDto">
+        select pid,
+               categoryId,
+               name,
+               price,
+               content,
+               createdAt,
+               updatedAt,
+               quantity
+        from product
+        where deleted = 'N'
+          and name = #{name}
+    </select>
+
+    <select id="findById" parameterType="Long" resultType="com.flab.daitso.dto.product.ProductDto">
         select pid,
                categoryId,
                name,
@@ -31,7 +45,7 @@
           and pid = #{pid}
     </select>
 
-    <select id="findProductByCategoryIdAndName" resultType="com.flab.daitso.dto.product.ProductDto">
+    <select id="findByCategoryIdAndName" resultType="com.flab.daitso.dto.product.ProductDto">
         select pid,
                categoryId,
                name,
@@ -46,14 +60,14 @@
           and name = #{productName}
     </select>
 
-    <update id="increaseQuantity" parameterType="int">
+    <update id="increaseQuantity" parameterType="Long">
         update product
         set quantity  = quantity + 1,
             updatedAt = NOW()
         where pid = #{pid}
     </update>
 
-    <insert id="registerProduct" parameterType="com.flab.daitso.dto.product.ProductDto">
+    <insert id="register" parameterType="com.flab.daitso.dto.product.ProductDto">
         insert into product
         (categoryId,
          name,
@@ -67,7 +81,7 @@
                 NOW())
     </insert>
 
-    <update id="deleteProduct" parameterType="int">
+    <update id="delete" parameterType="int">
         update product
         set deleted   = 'Y',
             updatedAt = NOW()

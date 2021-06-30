@@ -18,46 +18,53 @@ public class ProductService {
         this.productMapper = productMapper;
     }
 
-    public List<ProductDto> findProductAll(int categoryId) throws Exception {
-        List<ProductDto> products = productMapper.findProductsByCategoryId(categoryId);
+    public List<ProductDto> findProductAll(int categoryId) {
+        List<ProductDto> products = productMapper.findByCategoryId(categoryId);
 
-        if (products.isEmpty()){
-            throw new NotFoundException("현재 카테고리에 해당하는 상품이 없습니다.");
+        if (products.isEmpty()) {
+            throw new NotFoundException();
         }
         return products;
     }
 
-    public ProductDto findProductById(Long pid) throws Exception {
-        Optional<ProductDto> product = Optional.ofNullable(productMapper.findProductById(pid));
+    public ProductDto findProductById(Long pid) {
+        Optional<ProductDto> product = Optional.ofNullable(productMapper.findById(pid));
 
-        if (product.isEmpty()  ){
-            throw new NotFoundException("존재하지 않는 상품입니다.");
+        if (product.isEmpty()) {
+            throw new NotFoundException();
         }
-        if (product.get().getQuantity() < 1){
-            throw new SoldOutException("품절 상품 입니다.");
+        if (product.get().getQuantity() < 1) {
+            throw new SoldOutException();
         }
 
         return product.get();
     }
 
-    public void registerProduct(ProductDto productDto) throws Exception {
-        Optional<ProductDto> product = Optional.ofNullable(
-                productMapper.findProductByCategoryIdAndName(productDto.getCategoryId(), productDto.getName()));
-        if (product.isPresent()){
-            productMapper.increaseQuantity(product.get().getPid());
+    public ProductDto findByName(String name) {
+        Optional<ProductDto> product = Optional.ofNullable(productMapper.findByName(name));
+
+        if (product.isEmpty()) {
+            throw new NotFoundException();
         }
-        else {
-            productMapper.registerProduct(productDto);
+        return product.get();
+    }
+
+    public void registerProduct(ProductDto productDto) {
+        Optional<ProductDto> product = Optional.ofNullable(
+                productMapper.findByCategoryIdAndName(productDto.getCategoryId(), productDto.getName()));
+        if (product.isPresent()) {
+            productMapper.increaseQuantity(product.get().getPid());
+        } else {
+            productMapper.register(productDto);
         }
     }
 
-    public void deleteProduct(Long pid) throws Exception {
-        Optional<ProductDto> product = Optional.ofNullable(productMapper.findProductById(pid));
-        if (product.isEmpty()){
-            throw new NotFoundException("해당 상품이 존재하지 않습니다.");
-        }
-        else{
-            productMapper.deleteProduct(pid);
+    public void deleteProduct(Long pid) {
+        Optional<ProductDto> product = Optional.ofNullable(productMapper.findById(pid));
+        if (product.isEmpty()) {
+            throw new NotFoundException();
+        } else {
+            productMapper.delete(pid);
         }
     }
 }
