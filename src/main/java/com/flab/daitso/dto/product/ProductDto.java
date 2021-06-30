@@ -25,6 +25,9 @@ public class ProductDto {
     private LocalDateTime updatedAt;
     private int quantity;
 
+    public ProductDto() {
+    }
+
     public ProductDto(Long pid, int categoryId, String name, int price, String content, LocalDateTime createdAt, LocalDateTime updatedAt, int quantity) {
         this.pid = 1L;
         this.categoryId = categoryId;

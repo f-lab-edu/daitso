@@ -67,18 +67,10 @@
         where pid = #{pid}
     </update>
 
-    <insert id="register" parameterType="com.flab.daitso.dto.product.ProductDto">
-        insert into product
-        (categoryId,
-         name,
-         price,
-         content,
-         createdAt)
-        values (#{categoryId},
-                #{name},
-                #{price},
-                #{content},
-                NOW())
+    <insert id="register" parameterType="com.flab.daitso.dto.product.ProductDto" useGeneratedKeys="true" keyProperty="pid">
+        INSERT INTO product
+        (categoryId, name, price, content)
+        VALUES (#{categoryId}, #{name}, #{price}, #{content})
     </insert>
 
     <update id="delete" parameterType="int">

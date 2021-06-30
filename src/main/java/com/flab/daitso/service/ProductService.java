@@ -18,7 +18,7 @@ public class ProductService {
         this.productMapper = productMapper;
     }
 
-    public List<ProductDto> findProductAll(int categoryId) {
+    public List<ProductDto> findProductsByCategoryId(int categoryId) {
         List<ProductDto> products = productMapper.findByCategoryId(categoryId);
 
         if (products.isEmpty()) {
@@ -40,7 +40,7 @@ public class ProductService {
         return product.get();
     }
 
-    public ProductDto findByName(String name) {
+    public ProductDto findProductByName(String name) {
         Optional<ProductDto> product = Optional.ofNullable(productMapper.findByName(name));
 
         if (product.isEmpty()) {
