@@ -6,7 +6,7 @@ spring:
     username: root
     password: password
 
-# MyBatis
+# Mybatis
 mybatis:
   type-aliases-package: com.flab.daitso.mapper
   mapper-locations: classpath:mapper/*.xml

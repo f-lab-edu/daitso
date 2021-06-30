@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.flab.daitso.mapper.ProductMapper">
+
+    <select id="getProducts" parameterType="int" resultType="com.flab.daitso.dto.product.ProductDto">
+        select
+            pid,
+            categoryId,
+            name,
+            price,
+            content,
+            createdAt,
+            updatedAt,
+            quantity
+        from
+            product
+        where
+            deleted = 'N' and
+            categoryId = #{id}
+    </select>
+
+    <select id="getProduct" parameterType="int" resultType="com.flab.daitso.dto.product.ProductDto">
+        select
+            pid,
+            categoryId,
+            name,
+            price,
+            content,
+            createdAt,
+            updatedAt,
+            quantity
+        from
+            product
+        where
+            deleted = 'N' and
+            pid= #{pid}
+    </select>
+
+    <select id="getProductByCidName" resultType="com.flab.daitso.dto.product.ProductDto">
+        select
+            pid,
+            categoryId,
+            name,
+            price,
+            content,
+            createdAt,
+            updatedAt,
+            quantity
+        from
+            product
+        where
+            deleted = 'N' and
+            categoryId = #{categoryId} and
+            name = #{productName}
+    </select>
+
+    <update id="increaseQuantity" parameterType="int">
+        update product set
+            quantity = quantity+1,
+            updatedAt = NOW()
+        where
+            pid = #{pid}
+    </update>
+
+    <insert id="registerProduct" parameterType="com.flab.daitso.dto.product.ProductDto">
+        insert into product
+        (
+        categoryId,
+        name,
+        price,
+        content,
+        createdAt
+        )
+        values
+        (
+        #{categoryId},
+        #{name},
+        #{price},
+        #{content},
+        NOW()
+        )
+    </insert>
+
+    <update id="deleteProduct" parameterType="int">
+        update product set
+        deleted = 'Y',
+        updatedAt = NOW()
+        where
+            pid = #{pid}
+    </update>
+
+</mapper>
