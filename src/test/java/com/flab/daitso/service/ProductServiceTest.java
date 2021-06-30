@@ -19,7 +19,7 @@ import static org.junit.jupiter.api.Assertions.*;
 
 @ExtendWith(SpringExtension.class)
 @SpringBootTest
-@Transactional
+//@Transactional
 class ProductServiceTest {
 
     @Autowired
@@ -39,7 +39,7 @@ class ProductServiceTest {
                 .build();
 
         productService.registerProduct(productDto);
-        ProductDto product = productService.findByName("test");
+        ProductDto product = productService.findProductByName("test");
         assertThat(product.getName()).isEqualTo(productDto.getName());
     }
 
@@ -63,7 +63,7 @@ class ProductServiceTest {
         productService.registerProduct(productDto1);
         productService.registerProduct(productDto2);
 
-        List<ProductDto> productAll = productService.findProductAll(1);
+        List<ProductDto> productAll = productService.findProductsByCategoryId(1);
         assertThat(productAll.size()).isEqualTo(2);
         assertThat(productAll.get(0).getName()).isEqualTo("test");
     }
@@ -79,13 +79,15 @@ class ProductServiceTest {
                 .build();
         productService.registerProduct(productDto);
 
+        ProductDto product = productService.findProductByName("test1");
+
         // 상품 아이디를 이용해 상품을 제대로 검색하는지 테스트
-        ProductDto product = productService.findProductById(1L);
-        assertThat(product.getPid()).isEqualTo(1L);
+        ProductDto findProduct = productService.findProductById(product.getPid());
+        assertThat(product.getPid()).isEqualTo(findProduct.getPid());
     }
 
     @Test
-    @DisplayName("상품 아이디로 해당 상품을 제대로 검색하는지 테스트")
+    @DisplayName("상품 이름로 해당 상품을 제대로 검색하는지 테스트")
     public void 상품_이름으로_검색_테스트() {
         ProductDto productDto = new ProductDto.Builder()
                 .categoryId(1)
@@ -95,7 +97,7 @@ class ProductServiceTest {
                 .build();
         productService.registerProduct(productDto);
 
-        ProductDto product = productService.findByName("test1");
+        ProductDto product = productService.findProductByName("test1");
         assertThat(product.getName()).isEqualTo(productDto.getName());
     }
 
