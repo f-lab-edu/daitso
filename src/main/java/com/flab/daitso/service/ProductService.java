@@ -4,7 +4,6 @@ import com.flab.daitso.dto.product.ProductDto;
 import com.flab.daitso.mapper.ProductMapper;
 import com.flab.daitso.error.exception.product.SoldOutException;
 import com.flab.daitso.error.exception.product.NotFoundException;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -13,11 +12,14 @@ import java.util.Optional;
 @Service
 public class ProductService {
 
-    @Autowired
-    ProductMapper productMapper;
+    private final ProductMapper productMapper;
 
-    public List<ProductDto> getProducts(int categoryId) throws Exception {
-        List<ProductDto> products = productMapper.getProducts(categoryId);
+    public ProductService(ProductMapper productMapper) {
+        this.productMapper = productMapper;
+    }
+
+    public List<ProductDto> findProductAll(int categoryId) throws Exception {
+        List<ProductDto> products = productMapper.findProductsByCategoryId(categoryId);
 
         if (products.isEmpty()){
             throw new NotFoundException("현재 카테고리에 해당하는 상품이 없습니다.");
@@ -25,10 +27,10 @@ public class ProductService {
         return products;
     }
 
-    public ProductDto getProduct(int pid) throws Exception {
-        Optional<ProductDto> product = Optional.ofNullable(productMapper.getProduct(pid));
+    public ProductDto findProductById(Long pid) throws Exception {
+        Optional<ProductDto> product = Optional.ofNullable(productMapper.findProductById(pid));
 
-        if (product.isEmpty()){
+        if (product.isEmpty()  ){
             throw new NotFoundException("존재하지 않는 상품입니다.");
         }
         if (product.get().getQuantity() < 1){
@@ -39,9 +41,8 @@ public class ProductService {
     }
 
     public void registerProduct(ProductDto productDto) throws Exception {
-
-        Optional<ProductDto> product = Optional.ofNullable(productMapper.getProductByCidName(productDto.getCategoryId(), productDto.getName()));
-
+        Optional<ProductDto> product = Optional.ofNullable(
+                productMapper.findProductByCategoryIdAndName(productDto.getCategoryId(), productDto.getName()));
         if (product.isPresent()){
             productMapper.increaseQuantity(product.get().getPid());
         }
@@ -50,14 +51,13 @@ public class ProductService {
         }
     }
 
-    public void deleteProduct(int pid) throws Exception {
-        Optional<ProductDto> product = Optional.ofNullable(productMapper.getProduct(pid));
+    public void deleteProduct(Long pid) throws Exception {
+        Optional<ProductDto> product = Optional.ofNullable(productMapper.findProductById(pid));
         if (product.isEmpty()){
             throw new NotFoundException("해당 상품이 존재하지 않습니다.");
         }
         else{
             productMapper.deleteProduct(pid);
         }
-
     }
 }

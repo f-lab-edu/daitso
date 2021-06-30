@@ -1,17 +1,12 @@
 package com.flab.daitso.dto.product;
 
-import com.flab.daitso.dto.order.OrderDto;
-
 import javax.validation.constraints.Min;
-import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
-
 
 public class ProductDto {
 
-    private int pid;
+    private Long pid;
 
     @NotNull(message = "categoryId can't be null")//  how to restrain..?
     private int categoryId;
@@ -30,86 +25,98 @@ public class ProductDto {
     private LocalDateTime updatedAt;
     private int quantity;
 
-
-    public ProductDto(){
-
+    public ProductDto(Long pid, int categoryId, String name, int price, String content, LocalDateTime createdAt, LocalDateTime updatedAt, int quantity) {
+        this.pid = 1L;
+        this.categoryId = categoryId;
+        this.name = name;
+        this.price = price;
+        this.content = content;
+        this.createdAt = createdAt;
+        this.updatedAt = updatedAt;
+        this.quantity = quantity;
     }
 
-    public int getPid() {
+    public Long getPid() {
         return pid;
-    }
-
-    public void setPid(int pid) {
-        this.pid = pid;
     }
 
     public int getCategoryId() {
         return categoryId;
     }
 
-    public void setCategoryId(int categoryId) {
-        this.categoryId = categoryId;
-    }
-
     public String getName() {
         return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
     }
 
     public int getPrice() {
         return price;
     }
 
-    public void setPrice(int price) {
-        this.price = price;
-    }
-
     public String getContent() {
         return content;
-    }
-
-    public void setContent(String content) {
-        this.content = content;
     }
 
     public LocalDateTime getCreatedAt() {
         return createdAt;
     }
 
-    public void setCreatedAt(LocalDateTime createdAt) {
-        this.createdAt = createdAt;
-    }
-
     public LocalDateTime getUpdatedAt() {
         return updatedAt;
-    }
-
-    public void setUpdatedAt(LocalDateTime updatedAt) {
-        this.updatedAt = updatedAt;
     }
 
     public int getQuantity() {
         return quantity;
     }
 
-    public void setQuantity(int quantity) {
-        this.quantity = quantity;
-    }
+    /**
+     * Builder 패턴 구현
+     */
+    public static class Builder {
+        private int categoryId;
+        private String name;
+        private int price;
+        private String content;
+        private LocalDateTime createAt;
+        private LocalDateTime updateAt;
+        private int quantity;
 
-    @Override
-    public String toString() {
-        return "ProductDto{" +
-                "categoryId=" + categoryId +
-                ", name='" + name + '\'' +
-                ", price=" + price +
-                ", content='" + content + '\'' +
-                ", createdAt='" + createdAt + '\'' +
-                ", updatedAt='" + updatedAt + '\'' +
-                ", quantity=" + quantity +
-                '}';
-    }
+        public Builder categoryId(int categoryId) {
+            this.categoryId = categoryId;
+            return this;
+        }
 
+        public Builder name(String name) {
+            this.name = name;
+            return this;
+        }
+
+        public Builder price(int price) {
+            this.price = price;
+            return this;
+        }
+
+        public Builder content(String content) {
+            this.content = content;
+            return this;
+        }
+
+        public Builder createAt(LocalDateTime createAt) {
+            this.createAt = createAt;
+            return this;
+        }
+
+        public Builder updateAt(LocalDateTime updateAt) {
+            this.updateAt = updateAt;
+            return this;
+        }
+
+        public Builder quantity(int quantity) {
+            this.quantity = quantity;
+            return this;
+        }
+
+        public ProductDto build() {
+            return new ProductDto(1L, categoryId, name, price, content, createAt, updateAt, quantity);
+        }
+    }
 }

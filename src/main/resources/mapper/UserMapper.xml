@@ -16,6 +16,6 @@
         SELECT *
         FROM user
         WHERE userEmail = #{userEmail}
-        AND userPassword = #{userPassword}
+          AND userPassword = #{userPassword}
     </select>
 </mapper>
