@@ -3,9 +3,9 @@ package com.flab.daitso.service;
 import com.flab.daitso.dto.user.User;
 import com.flab.daitso.dto.user.UserLoginRequest;
 import com.flab.daitso.dto.user.UserRegister;
-import com.flab.daitso.exception.ExistingIdException;
-import com.flab.daitso.exception.NotExistingIdException;
-import com.flab.daitso.exception.WrongPasswordException;
+import com.flab.daitso.error.exception.ExistingIdException;
+import com.flab.daitso.error.exception.NotExistingIdException;
+import com.flab.daitso.error.exception.WrongPasswordException;
 import com.flab.daitso.mapper.UserMapper;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -35,7 +35,7 @@ class UserServiceTest {
         UserRegister userRegister = new UserRegister("test1", "1q2w3e4r!", "test", "010-1111-2222");
         String userEmail = userService.signup(userRegister);
 
-        assertThat(userEmail).isEqualTo(userMapper.findByUserId("test1").getUserEmail());
+        assertThat(userEmail).isEqualTo(userMapper.findByUserEmail("test1").getUserEmail());
     }
 
     @Test
@@ -61,7 +61,7 @@ class UserServiceTest {
         User login = userService.login(loginRequest);
 
         assertThat(login.getUserEmail()).isEqualTo(userEmail);
-        assertThat(login.getUserEmail()).isEqualTo(userMapper.findByUserIdAndUserPassword(loginRequest).getUserEmail());
+        assertThat(login.getUserEmail()).isEqualTo(userMapper.findByUserEmailAndUserPassword(loginRequest).getUserEmail());
     }
 
     @Test

@@ -9,8 +9,9 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 public class ErrorController {
 
     @ResponseStatus(HttpStatus.BAD_REQUEST)
-    @ExceptionHandler(IllegalAccessException.class)
-    public ErrorObject handleIllegalAccessException(IllegalAccessException e){
-        return new ErrorObject(e);
+
+    @ExceptionHandler(RuntimeException.class)
+    public String handleIllegalAccessException(RuntimeException e) {
+        return new ErrorObject(e).getExceptionType();
     }
 }

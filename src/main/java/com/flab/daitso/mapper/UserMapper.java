@@ -9,7 +9,7 @@ public interface UserMapper {
 
     void save(User user);
 
-    User findByUserId(String userId);
+    User findByUserEmail(String userEmail);
 
-    User findByUserIdAndUserPassword(UserLoginRequest userLoginRequest);
+    User findByUserEmailAndUserPassword(UserLoginRequest userLoginRequest);
 }

@@ -1,15 +1,17 @@
 package com.flab.daitso.controller;
 
+import com.flab.daitso.dto.user.SessionUser;
 import com.flab.daitso.dto.user.User;
 import com.flab.daitso.dto.user.UserLoginRequest;
+import com.flab.daitso.error.exception.UserNotLoginException;
 import com.flab.daitso.service.UserService;
-import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
+import javax.validation.Valid;
 
-@Controller
+@RestController
 @RequestMapping("/users")
 public class UserLoginController {
 
@@ -20,9 +22,26 @@ public class UserLoginController {
     }
 
     @PostMapping("/login")
-    public User login(UserLoginRequest userLoginRequest, HttpSession httpSession) {
+    public User login(@RequestBody @Valid UserLoginRequest userLoginRequest, HttpServletRequest httpServletRequest) {
         User user = userService.login(userLoginRequest);
+        SessionUser sessionUser = new SessionUser(user);
+        HttpSession session = httpServletRequest.getSession();
+        session.setAttribute("USER_ID", user.getUserEmail());
+        session.setAttribute("USER", sessionUser);
         return user;
     }
 
+    @PostMapping("/logout")
+    public void logout(HttpServletRequest httpServletRequest) {
+        HttpSession session = httpServletRequest.getSession();
+        if (!isLogin(session)) {
+            throw new UserNotLoginException();
+        }
+        session.removeAttribute("USER_ID");
+        session.removeAttribute("USER");
+    }
+
+    public boolean isLogin(HttpSession httpSession) {
+        return httpSession.getAttribute("USER_ID") != null;
+    }
 }
