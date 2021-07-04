@@ -1,36 +1,39 @@
 package com.flab.daitso.dto.product;
 
+import com.flab.daitso.error.exception.product.NotEnoughStockException;
+
 import javax.validation.constraints.Min;
-import javax.validation.constraints.NotNull;
+import javax.validation.constraints.NotBlank;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 public class ProductDto {
 
-    private Long pid;
+    private Long productId;
 
-    @NotNull(message = "categoryId can't be null")//  how to restrain..?
-    private int categoryId;
-
-    @NotNull(message = "name can't be null")
+    @NotBlank(message = "name can't be null")
     private String name;
 
-    @NotNull(message = "price can't be null")//   how to restrain..?
+    @NotBlank(message = "price can't be null")//   how to restrain..?
     @Min(value = 0, message = "price can't be smaller than 0")
     private int price;
 
-    @NotNull(message = "content can't be null")
+    @NotBlank(message = "content can't be null")
     private String content;
 
     private LocalDateTime createdAt;
+
     private LocalDateTime updatedAt;
+
     private int quantity;
 
     public ProductDto() {
     }
 
-    public ProductDto(Long pid, int categoryId, String name, int price, String content, LocalDateTime createdAt, LocalDateTime updatedAt, int quantity) {
-        this.pid = 1L;
-        this.categoryId = categoryId;
+    public ProductDto(Long productId, String name, int price, String content, LocalDateTime createdAt,
+                      LocalDateTime updatedAt, int quantity) {
+        this.productId = 1L;
         this.name = name;
         this.price = price;
         this.content = content;
@@ -39,12 +42,8 @@ public class ProductDto {
         this.quantity = quantity;
     }
 
-    public Long getPid() {
-        return pid;
-    }
-
-    public int getCategoryId() {
-        return categoryId;
+    public Long getProductId() {
+        return productId;
     }
 
     public String getName() {
@@ -72,21 +71,33 @@ public class ProductDto {
     }
 
     /**
+     * stock 증가
+     */
+    public void addStock(int quantity) {
+        this.quantity += quantity;
+    }
+
+    /**
+     * stock 감소
+     */
+    public void removeStock(int quantity) {
+        int restStock = this.quantity - quantity;
+        if (restStock < 0) {
+            throw new NotEnoughStockException();
+        }
+        this.quantity = restStock;
+    }
+
+    /**
      * Builder 패턴 구현
      */
     public static class Builder {
-        private int categoryId;
         private String name;
         private int price;
         private String content;
         private LocalDateTime createAt;
         private LocalDateTime updateAt;
         private int quantity;
-
-        public Builder categoryId(int categoryId) {
-            this.categoryId = categoryId;
-            return this;
-        }
 
         public Builder name(String name) {
             this.name = name;
@@ -119,7 +130,7 @@ public class ProductDto {
         }
 
         public ProductDto build() {
-            return new ProductDto(1L, categoryId, name, price, content, createAt, updateAt, quantity);
+            return new ProductDto(1L, name, price, content, createAt, updateAt, quantity);
         }
     }
 }

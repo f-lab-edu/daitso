@@ -1,12 +1,16 @@
 package com.flab.daitso.service;
 
+import com.flab.daitso.dto.product.Category;
 import com.flab.daitso.dto.product.ProductDto;
+import com.flab.daitso.error.exception.product.DuplicateProductNameException;
 import com.flab.daitso.mapper.ProductMapper;
 import com.flab.daitso.error.exception.product.SoldOutException;
 import com.flab.daitso.error.exception.product.NotFoundException;
+import org.apache.ibatis.annotations.Param;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.web.bind.annotation.RequestParam;
 
-import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -14,57 +18,66 @@ public class ProductService {
 
     private final ProductMapper productMapper;
 
-    public ProductService(ProductMapper productMapper) {
+    private final CategoryService categoryService;
+
+    @Autowired
+    public ProductService(ProductMapper productMapper, CategoryService categoryService) {
         this.productMapper = productMapper;
+        this.categoryService = categoryService;
     }
 
-    public List<ProductDto> findProductsByCategoryId(int categoryId) {
-        List<ProductDto> products = productMapper.findByCategoryId(categoryId);
-
-        if (products.isEmpty()) {
+    public ProductDto findProductById(Long productId) {
+        ProductDto product = productMapper.findProductById(productId);
+        if (product == null) {
             throw new NotFoundException();
         }
-        return products;
-    }
-
-    public ProductDto findProductById(Long pid) {
-        Optional<ProductDto> product = Optional.ofNullable(productMapper.findById(pid));
-
-        if (product.isEmpty()) {
-            throw new NotFoundException();
-        }
-        if (product.get().getQuantity() < 1) {
+        if (product.getQuantity() < 1) {
             throw new SoldOutException();
         }
 
-        return product.get();
+        return product;
     }
 
     public ProductDto findProductByName(String name) {
-        Optional<ProductDto> product = Optional.ofNullable(productMapper.findByName(name));
-
-        if (product.isEmpty()) {
+        ProductDto product = productMapper.findProductByName(name);
+        if (product == null) {
             throw new NotFoundException();
         }
-        return product.get();
+
+        return product;
     }
 
-    public void registerProduct(ProductDto productDto) {
-        Optional<ProductDto> product = Optional.ofNullable(
-                productMapper.findByCategoryIdAndName(productDto.getCategoryId(), productDto.getName()));
-        if (product.isPresent()) {
-            productMapper.increaseQuantity(product.get().getPid());
-        } else {
-            productMapper.register(productDto);
+    public Long registerProduct(ProductDto productDto) {
+        DuplicateProductName(productDto);
+        productMapper.register(productDto);
+
+        return productDto.getProductId();
+    }
+
+    private void DuplicateProductName(ProductDto productDto) {
+        ProductDto findName = productMapper.findProductByName(productDto.getName());
+        if (findName != null) {
+            throw new DuplicateProductNameException();
         }
     }
 
-    public void deleteProduct(Long pid) {
-        Optional<ProductDto> product = Optional.ofNullable(productMapper.findById(pid));
+    public void deleteProduct(Long productId) {
+        Optional<ProductDto> product = Optional.ofNullable(productMapper.findProductById(productId));
         if (product.isEmpty()) {
             throw new NotFoundException();
         } else {
-            productMapper.delete(pid);
+            productMapper.delete(productId);
         }
+    }
+
+    public Category saveProductInCategory(Long categoryId, Long productId) {
+        Category findCategory = categoryService.findById(categoryId);
+        ProductDto findProduct = findProductById(productId);
+        findCategory.addProduct(findProduct);
+        System.out.println("#####" + findCategory.getProducts().get(0).getName());
+
+        productMapper.saveProductInCategory(categoryId, productId);
+
+        return findCategory;
     }
 }

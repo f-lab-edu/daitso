@@ -3,21 +3,14 @@ package com.flab.daitso.mapper;
 import com.flab.daitso.dto.product.ProductDto;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
-import java.util.List;
 
 @Mapper
 public interface ProductMapper {
 
-    // 특정 카테고리에 속하는 모든 상품을 카테고리 아이디를 사용해 찾는다.
-    List<ProductDto> findByCategoryId(int categoryId);
-
-    ProductDto findByName(String name);
+    ProductDto findProductByName(String name);
 
     // 상품을 상품 id로 찾는다.
-    ProductDto findById(Long pid);
-
-    // 상품을 카테고리 아이디와 상품이름 두가지를 매칭하여 찾아온다.
-    ProductDto findByCategoryIdAndName(@Param("categoryId") int categoryId, @Param("productName") String productName);
+    ProductDto findProductById(Long productId);
 
     // 새 상품을 dto 째로 insert 한다.
     void register(ProductDto productDto);
@@ -27,5 +20,7 @@ public interface ProductMapper {
 
     // 해당 상품 아이디에 해당하는 상품의 수량을 1 증가시킨다.
     void increaseQuantity(Long pid);
+
+    void saveProductInCategory(@Param("categoryId") Long categoryId, @Param("productId") Long productId);
 }
 
