@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.flab.daitso.mapper.CategoryMapper">
+    <insert id="saveRootCategory" parameterType="com.flab.daitso.dto.product.Category" useGeneratedKeys="true" keyProperty="categoryId">
+        INSERT INTO category (name, parent_id)
+        VALUES (#{name}, null)
+        <selectKey keyProperty="categoryId" resultType="Long">
+            SELECT LAST_INSERT_ID()
+        </selectKey>
+    </insert>
+
+    <insert id="saveChildCategory" parameterType="hashmap" useGeneratedKeys="true" keyProperty="categoryId">
+        INSERT INTO category (name, parent_id)
+        VALUES (#{name}, #{parentId})
+<!--        <selectKey keyProperty="categoryId" resultType="Long">-->
+<!--            SELECT LAST_INSERT_ID()-->
+<!--        </selectKey>-->
+    </insert>
+
+    <select id="findByCategoryId" parameterType="Long" resultType="com.flab.daitso.dto.product.Category">
+        select category_id, name, parent_id
+        from category
+        where category_id = #{categoryId}
+    </select>
+
+    <select id="findByName" parameterType="String" resultType="com.flab.daitso.dto.product.Category">
+        select category_id, name, parent_id
+        from category
+        where name = #{name}
+    </select>
+</mapper>
