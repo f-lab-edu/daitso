@@ -1,4 +1,4 @@
-현package com.flab.daitso.error.exception.product;
+package com.flab.daitso.error.exception.product;
 
 public class NotEnoughStockException extends RuntimeException {
 
