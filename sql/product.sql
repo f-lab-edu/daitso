@@ -1,6 +1,6 @@
 create table product(
    product_id BIGINT NOT NULL AUTO_INCREMENT,
-   name VARCHAR(30) NOT NULL,
+   name VARCHAR(100) NOT NULL UNIQUE,
    price VARCHAR(40) NOT NULL,
    content text NOT NULL,
    created_at datetime,
