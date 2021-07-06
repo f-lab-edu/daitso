@@ -47,6 +47,7 @@ public class Category {
     public void addProduct(ProductDto productDto) {
         this.products.add(productDto);
     }
+
     private void setParent(Category parent) {
         this.parent = parent;
     }
