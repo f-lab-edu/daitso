@@ -6,5 +6,6 @@ CREATE TABLE `user` (
     `phoneNumber` varchar(15) NOT NULL,
     `role` varchar(15) NOT NULL,
     `registrationDate` TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+
     PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;

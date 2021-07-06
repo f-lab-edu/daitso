@@ -23,11 +23,10 @@ public class UserLoginController {
 
     @PostMapping("/login")
     public User login(@RequestBody @Valid UserLoginRequest userLoginRequest, HttpServletRequest httpServletRequest) {
+
         User user = userService.login(userLoginRequest);
-        SessionUser sessionUser = new SessionUser(user);
         HttpSession session = httpServletRequest.getSession();
-        session.setAttribute("USER_ID", user.getUserEmail());
-        session.setAttribute("USER", sessionUser);
+        session.setAttribute("USER_ID", userLoginRequest.getUserEmail());
         return user;
     }
 
@@ -38,7 +37,6 @@ public class UserLoginController {
             throw new UserNotLoginException();
         }
         session.removeAttribute("USER_ID");
-        session.removeAttribute("USER");
     }
 
     public boolean isLogin(HttpSession httpSession) {

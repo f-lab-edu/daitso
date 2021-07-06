@@ -6,9 +6,20 @@
         VALUES (#{userEmail}, #{userPassword}, #{name}, #{phoneNumber}, #{role}, #{registrationDate})
     </insert>
 
-    <select id="findByUserEmail" resultType="com.flab.daitso.dto.user.User">
+    <insert id="saveAddress">
+        INSERT INTO address(userEmail, address)
+        VALUES (#{userEmail}, #{address})
+    </insert>
+
+    <select id="findByUserEmail" parameterType="String" resultType="com.flab.daitso.dto.user.User">
         SELECT *
         FROM user
+        WHERE userEmail = #{userEmail}
+    </select>
+
+    <select id="findAddressByEmail" parameterType="String" resultType="String">
+        SELECT address
+        FROM address
         WHERE userEmail = #{userEmail}
     </select>
 
@@ -18,4 +29,16 @@
         WHERE userEmail = #{userEmail}
         AND userPassword = #{userPassword}
     </select>
+
+    <update id="changePassword">
+        update user set
+            userPassword = #{userPassword}
+        where
+            userEmail = #{userEmail}
+    </update>
+
+    <insert id="savePaymentOption">
+        INSERT INTO paymentoption(userEmail, paymentoption)
+        VALUES (#{userEmail}, #{paymentoption})
+    </insert>
 </mapper>
