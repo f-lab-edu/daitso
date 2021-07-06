@@ -6,11 +6,10 @@ import com.flab.daitso.error.exception.product.DuplicateProductNameException;
 import com.flab.daitso.mapper.ProductMapper;
 import com.flab.daitso.error.exception.product.SoldOutException;
 import com.flab.daitso.error.exception.product.NotFoundException;
-import org.apache.ibatis.annotations.Param;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.RequestParam;
 
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -55,28 +54,28 @@ public class ProductService {
     }
 
     private void DuplicateProductName(ProductDto productDto) {
-        ProductDto findName = productMapper.findProductByName(productDto.getName());
-        if (findName != null) {
+        ProductDto findProduct = productMapper.findProductByName(productDto.getName());
+        if (findProduct != null) {
             throw new DuplicateProductNameException();
         }
     }
 
     public void deleteProduct(Long productId) {
-        Optional<ProductDto> product = Optional.ofNullable(productMapper.findProductById(productId));
-        if (product.isEmpty()) {
+        ProductDto findProduct = productMapper.findProductById(productId);
+
+        if (findProduct == null) {
             throw new NotFoundException();
-        } else {
-            productMapper.delete(productId);
         }
+        productMapper.delete(productId);
     }
 
-    public Category saveProductInCategory(Long categoryId, Long productId) {
+    public Category saveProductInCategory(Long categoryId, List<ProductDto> products) {
         Category findCategory = categoryService.findById(categoryId);
-        ProductDto findProduct = findProductById(productId);
-        findCategory.addProduct(findProduct);
-        System.out.println("#####" + findCategory.getProducts().get(0).getName());
-
-        productMapper.saveProductInCategory(categoryId, productId);
+        for (ProductDto product : products) {
+            ProductDto findProduct = findProductById(product.getProductId());
+            findCategory.addProduct(findProduct);
+            productMapper.saveProductInCategory(categoryId, findProduct.getProductId());
+        }
 
         return findCategory;
     }

@@ -4,6 +4,7 @@ import com.flab.daitso.error.exception.product.NotEnoughStockException;
 
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -12,14 +13,14 @@ public class ProductDto {
 
     private Long productId;
 
-    @NotBlank(message = "name can't be null")
+    @NotBlank(message = "이름을 입력하세요.")
     private String name;
 
-    @NotBlank(message = "price can't be null")//   how to restrain..?
-    @Min(value = 0, message = "price can't be smaller than 0")
-    private int price;
+    @NotNull(message = "가격을 입력하세요.")
+    @Min(value = 0, message = "가격은 0원 이상이여야 합니다.")
+    private Long price;
 
-    @NotBlank(message = "content can't be null")
+    @NotBlank(message = "상품 내용을 입력하세요.")
     private String content;
 
     private LocalDateTime createdAt;
@@ -31,7 +32,7 @@ public class ProductDto {
     public ProductDto() {
     }
 
-    public ProductDto(Long productId, String name, int price, String content, LocalDateTime createdAt,
+    public ProductDto(Long productId, String name, Long price, String content, LocalDateTime createdAt,
                       LocalDateTime updatedAt, int quantity) {
         this.productId = 1L;
         this.name = name;
@@ -50,7 +51,7 @@ public class ProductDto {
         return name;
     }
 
-    public int getPrice() {
+    public Long getPrice() {
         return price;
     }
 
@@ -93,7 +94,7 @@ public class ProductDto {
      */
     public static class Builder {
         private String name;
-        private int price;
+        private Long price;
         private String content;
         private LocalDateTime createAt;
         private LocalDateTime updateAt;
@@ -104,7 +105,7 @@ public class ProductDto {
             return this;
         }
 
-        public Builder price(int price) {
+        public Builder price(Long price) {
             this.price = price;
             return this;
         }

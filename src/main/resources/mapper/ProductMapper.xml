@@ -31,10 +31,10 @@
         </selectKey>
     </insert>
 
-    <update id="delete" parameterType="int">
+    <update id="delete" parameterType="Long">
         update product
         set deleted   = 'Y',
-            updatedAt = NOW()
+            updated_at = NOW()
         where product_id = #{productId}
     </update>
 

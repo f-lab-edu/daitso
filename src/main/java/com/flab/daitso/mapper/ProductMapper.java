@@ -4,6 +4,8 @@ import com.flab.daitso.dto.product.ProductDto;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 
+import java.util.List;
+
 @Mapper
 public interface ProductMapper {
 
@@ -16,10 +18,7 @@ public interface ProductMapper {
     void register(ProductDto productDto);
 
     // 하나의 상품을 상품아이디로 삭제한다.
-    void delete(Long pid);
-
-    // 해당 상품 아이디에 해당하는 상품의 수량을 1 증가시킨다.
-    void increaseQuantity(Long pid);
+    void delete(Long productId);
 
     void saveProductInCategory(@Param("categoryId") Long categoryId, @Param("productId") Long productId);
 }
