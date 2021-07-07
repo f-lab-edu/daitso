@@ -68,38 +68,6 @@ public class ProductControllerTest {
     }
 
     @Test
-    @DisplayName("카테고리별 상품 목록 조회 테스트")
-    public void 카테고리별_상품_목록_조회_테스트() throws Exception {
-        ProductDto productDto1 = new ProductDto.Builder()
-                .name("test1")
-                .price(10000L)
-                .content("test 상품입니다.")
-                .build();
-
-        ProductDto productDto2 = new ProductDto.Builder()
-                .name("test2")
-                .price(20000L)
-                .content("test2 상품입니다.")
-                .build();
-
-        ProductDto productDto3 = new ProductDto.Builder()
-                .name("test3")
-                .price(30000L)
-                .content("test3 상품입니다.")
-                .build();
-
-        productService.registerProduct(productDto1);
-        productService.registerProduct(productDto2);
-        productService.registerProduct(productDto3);
-
-        mvc.perform(get("/np/categories/")
-                .contentType(MediaType.APPLICATION_JSON))
-                .andExpect(status().isOk())
-                .andDo(print());
-    }
-
-
-    @Test
     @DisplayName("상품 아이디 해당 상품을 제대로 검색하는지 테스트")
     public void 상품_아이디로_검색_테스트() throws Exception {
         ProductDto productDto = new ProductDto.Builder()
