@@ -2,7 +2,7 @@
 spring:
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
-    url: jdbc:mysql://localhost:3306/daitso?useUnicode=true&characterEncoding=utf-8&serverTimezone=UTC
+    url: jdbc:mysql://localhost:3306/daitso?useUnicode=true&characterEncoding=utf-8&serverTimezone=UTC&allowMultiQueries=true
     username: root
     password: password
 
