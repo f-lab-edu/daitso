@@ -14,12 +14,16 @@ public interface CategoryMapper {
 
     Long saveChildCategory(HashMap<String, Object> map);
 
+    void removeCategory(Long categoryId);
+
     Category findByCategoryId(Long categoryId);
 
     /**
      * 카테고리 이름으로 product list 반환
      */
     List<ProductDto> findCategoryListByName(String name);
+
+    List<ProductDto> findCategoryListById(Long productId);
 
     Category findByName(String name);
 
