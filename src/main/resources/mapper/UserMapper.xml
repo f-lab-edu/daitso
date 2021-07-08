@@ -1,21 +1,21 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.flab.daitso.mapper.UserMapper">
-    <insert id="save" parameterType="com.flab.daitso.dto.user.UserRegister" useGeneratedKeys="true" keyProperty="id">
-        INSERT INTO user(userEmail, userPassword, name, phoneNumber, role, registrationDate)
+    <insert id="save" parameterType="com.flab.daitso.dto.user.UserRegister" useGeneratedKeys="true" keyProperty="userId">
+        INSERT INTO user(user_email, user_password, name, phone_number, role, registration_date)
         VALUES (#{userEmail}, #{userPassword}, #{name}, #{phoneNumber}, #{role}, #{registrationDate})
     </insert>
 
     <select id="findByUserEmail" resultType="com.flab.daitso.dto.user.User">
         SELECT *
         FROM user
-        WHERE userEmail = #{userEmail}
+        WHERE user_email = #{userEmail}
     </select>
 
     <select id="findByUserEmailAndUserPassword" resultType="com.flab.daitso.dto.user.User">
         SELECT *
         FROM user
-        WHERE userEmail = #{userEmail}
-        AND userPassword = #{userPassword}
+        WHERE user_email = #{userEmail}
+          AND user_password = #{userPassword}
     </select>
 </mapper>

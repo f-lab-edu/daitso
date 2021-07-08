@@ -2,92 +2,44 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
 <mapper namespace="com.flab.daitso.mapper.ProductMapper">
-
-    <select id="getProducts" parameterType="int" resultType="com.flab.daitso.dto.product.ProductDto">
-        select
-            pid,
-            categoryId,
-            name,
-            price,
-            content,
-            createdAt,
-            updatedAt,
-            quantity
-        from
-            product
-        where
-            deleted = 'N' and
-            categoryId = #{id}
+    <select id="findProductByName" parameterType="String" resultType="com.flab.daitso.dto.product.ProductDto">
+        select product_id, name, price, content, created_at, updated_at, quantity
+        from product
+        where deleted = 'N'
+          and name = #{name}
     </select>
 
-    <select id="getProduct" parameterType="int" resultType="com.flab.daitso.dto.product.ProductDto">
-        select
-            pid,
-            categoryId,
-            name,
-            price,
-            content,
-            createdAt,
-            updatedAt,
-            quantity
-        from
-            product
-        where
-            deleted = 'N' and
-            pid= #{pid}
+    <select id="findProductById" parameterType="Long" resultType="com.flab.daitso.dto.product.ProductDto">
+        select product_id, name, price, content, created_at, updated_at, quantity
+        from product
+        where deleted = 'N'
+          and product_id = #{productId}
     </select>
 
-    <select id="getProductByCidName" resultType="com.flab.daitso.dto.product.ProductDto">
-        select
-            pid,
-            categoryId,
-            name,
-            price,
-            content,
-            createdAt,
-            updatedAt,
-            quantity
-        from
-            product
-        where
-            deleted = 'N' and
-            categoryId = #{categoryId} and
-            name = #{productName}
-    </select>
-
-    <update id="increaseQuantity" parameterType="int">
-        update product set
-            quantity = quantity+1,
+    <update id="increaseQuantity" parameterType="Long">
+        update product
+        set quantity  = quantity + 1,
             updatedAt = NOW()
-        where
-            pid = #{pid}
+        where product_id = #{productId}
     </update>
 
-    <insert id="registerProduct" parameterType="com.flab.daitso.dto.product.ProductDto">
-        insert into product
-        (
-        categoryId,
-        name,
-        price,
-        content,
-        createdAt
-        )
-        values
-        (
-        #{categoryId},
-        #{name},
-        #{price},
-        #{content},
-        NOW()
-        )
+    <insert id="register" parameterType="com.flab.daitso.dto.product.ProductDto" useGeneratedKeys="true" keyProperty="productId">
+        INSERT INTO product (name, price, content)
+        VALUES (#{name}, #{price}, #{content})
+        <selectKey keyProperty="productId" resultType="Long">
+            SELECT LAST_INSERT_ID()
+        </selectKey>
     </insert>
 
-    <update id="deleteProduct" parameterType="int">
-        update product set
-        deleted = 'Y',
-        updatedAt = NOW()
-        where
-            pid = #{pid}
+    <update id="delete" parameterType="Long">
+        update product
+        set deleted   = 'Y',
+            updated_at = NOW()
+        where product_id = #{productId}
     </update>
 
+    <insert id="saveProductInCategory" parameterType="Long">
+        INSERT INTO product_category (category_id, product_id)
+        VALUES (#{categoryId}, #{productId})
+    </insert>
 </mapper>

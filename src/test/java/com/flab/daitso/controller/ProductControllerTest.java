@@ -1,54 +1,114 @@
 package com.flab.daitso.controller;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.flab.daitso.dto.product.Category;
 import com.flab.daitso.dto.product.ProductDto;
-import com.flab.daitso.mapper.ProductMapper;
 import com.flab.daitso.service.ProductService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
 
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
-import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.http.MediaType;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.context.WebApplicationContext;
+import org.springframework.web.filter.CharacterEncodingFilter;
 
-import java.util.List;
-
-import static org.assertj.core.api.Assertions.*;
-import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.Mockito.when;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-
-@WebMvcTest(ProductController.class)
+@ExtendWith(SpringExtension.class)
+@Transactional
+@AutoConfigureMockMvc
+@SpringBootTest
 public class ProductControllerTest {
-    @Autowired
-    private MockMvc mockMvc;
 
-    @MockBean
-    private ProductService productService;
+    @Autowired
+    private MockMvc mvc;
+
+    @Autowired
+    private ObjectMapper objectMapper;
+
+    @Autowired
+    private WebApplicationContext context;
+
+    @Autowired
+    ProductService productService;
+
+    @BeforeEach
+    public void setup() {
+        mvc = MockMvcBuilders
+                .webAppContextSetup(context)
+                .addFilters(new CharacterEncodingFilter("UTF-8", true))
+                .build();
+    }
 
     @Test
-    public void getProduct() throws Exception {
+    @DisplayName("상품 등록 테스트")
+    public void 상품_등록_테스트() throws Exception {
+        ProductDto productDto = new ProductDto.Builder()
+                .name("test1")
+                .price(10000L)
+                .content("test 상품입니다.")
+                .build();
 
-        //  특정 상품을 제대로 검색하는지 컨트롤러를 테스트
-        ProductDto product = new ProductDto();
-        product.setPid(6);
-        when(productService.getProduct(6)).thenReturn(product);
-
-        mockMvc.perform(get("/daitso/product/category/find/6"))
+        mvc.perform(post("/manage/register")
+                .content(objectMapper.writeValueAsString(productDto))
+                .contentType(MediaType.APPLICATION_JSON))
                 .andDo(print())
-                .andExpect(status().isOk())
-        .andExpect(jsonPath("$.pid").value(6));
+                .andExpect(status().isOk());
+    }
 
+    @Test
+    @DisplayName("상품 아이디 해당 상품을 제대로 검색하는지 테스트")
+    public void 상품_아이디로_검색_테스트() throws Exception {
+        ProductDto productDto = new ProductDto.Builder()
+                .name("test1")
+                .price(20000L)
+                .content("test1 상품입니다.")
+                .build();
+        productService.registerProduct(productDto);
+
+        ProductDto product = productService.findProductByName("test1");
+
+        mvc.perform(get("/vp/products/" + product.getProductId())
+                .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andDo(print());
+    }
+
+
+    @Test
+    @DisplayName("상품 아이디 해당 상품을 제대로 검색하는지 테스트")
+    public void 존재하지_않는_상품_테스트() throws Exception {
+        mvc.perform(get("/vp/products/" + -1)
+                .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isBadRequest())
+                .andExpect(content().string("NotFoundException"))
+                .andDo(print());
+    }
+
+    @Test
+    @DisplayName("상품 아이디로 상품 삭제")
+    public void 상품_아이디로_상품_삭제() throws Exception {
+        ProductDto product = new ProductDto.Builder()
+                .name("test1")
+                .price(20000L)
+                .content("test1 상품입니다.")
+                .build();
+        productService.registerProduct(product);
+
+        mvc.perform(delete("/manage/delete/" + product.getProductId())
+                .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andDo(print());
     }
 }

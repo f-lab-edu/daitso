@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.flab.daitso.mapper.CategoryMapper">
+    <insert id="saveRootCategory" parameterType="com.flab.daitso.dto.product.Category" useGeneratedKeys="true" keyProperty="categoryId">
+        INSERT INTO category (name, parent_id)
+        VALUES (#{name}, null)
+        <selectKey keyProperty="categoryId" resultType="Long">
+            SELECT LAST_INSERT_ID()
+        </selectKey>
+    </insert>
+
+    <insert id="saveChildCategory" parameterType="hashmap" useGeneratedKeys="true" keyProperty="categoryId">
+        INSERT INTO category (name, parent_id)
+        VALUES (#{name}, #{parentId})
+    </insert>
+
+    <delete id="removeCategory" parameterType="Long">
+        DELETE FROM product_category WHERE category_id = #{categoryId};
+        DELETE FROM category WHERE category_id = #{categoryId};
+    </delete>
+
+    <select id="findByCategoryId" parameterType="Long" resultType="com.flab.daitso.dto.product.Category">
+        SELECT category_id, name, parent_id
+        FROM category
+        WHERE category_id = #{categoryId}
+    </select>
+
+    <select id="findByName" parameterType="String" resultType="com.flab.daitso.dto.product.Category">
+        SELECT category_id, name, parent_id
+        FROM category
+        WHERE name = #{name}
+    </select>
+
+    <select id="findCategoryListByName" parameterType="String" resultType="com.flab.daitso.dto.product.ProductDto">
+        SELECT p.product_id, p.name, p.price, p.content, p.created_at, p.updated_at, p.quantity
+        FROM product p
+        WHERE p.product_id IN
+              (SELECT pc.product_id FROM product_category pc JOIN category c ON pc.category_id = c.category_id
+                  WHERE c.name = #{name})
+    </select>
+
+    <select id="findCategoryListById" parameterType="Long" resultType="com.flab.daitso.dto.product.ProductDto">
+        SELECT p.product_id, p.name, p.price, p.content, p.created_at, p.updated_at, p.quantity
+        FROM product p
+        WHERE p.product_id IN
+              (SELECT pc.product_id FROM product_category pc JOIN category c ON pc.category_id = c.category_id
+               WHERE c.category_id = #{category_id} OR c.parent_id = #{category_id})
+    </select>
+</mapper>
