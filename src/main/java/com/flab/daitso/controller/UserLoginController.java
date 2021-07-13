@@ -30,16 +30,17 @@ public class UserLoginController {
         return user;
     }
 
-    @PostMapping("/logout")
-    public void logout(HttpServletRequest httpServletRequest) {
-        HttpSession session = httpServletRequest.getSession();
-        if (!isLogin(session)) {
+    @GetMapping("logout")
+    public void logout(HttpServletRequest request){
+        // 쿠키에 있는 세션 아이디에 해당되는 세션이 없는 경우 새로 생성하지 않고 null 값 받음
+        HttpSession session = request.getSession(false);
+        // null 이면 로그인 상태가 아님
+        if (session == null){
             throw new UserNotLoginException();
         }
-        session.removeAttribute("USER_ID");
+        // 해당 세션을 무효화 하여 같은 세션 아이디로 검색시 null 값 받도록 함
+        session.invalidate();
+
     }
 
-    public boolean isLogin(HttpSession httpSession) {
-        return httpSession.getAttribute("USER_ID") != null;
-    }
 }

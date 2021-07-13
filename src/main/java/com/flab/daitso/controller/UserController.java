@@ -1,17 +1,20 @@
 package com.flab.daitso.controller;
 
 import com.flab.daitso.dto.user.*;
+import com.flab.daitso.error.exception.UserNotLoginException;
 import com.flab.daitso.error.exception.WrongPasswordException;
 import com.flab.daitso.service.UserService;
 import com.flab.daitso.utils.SHA256Util;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
+
 
 @RestController
 @RequestMapping("/users")
@@ -33,11 +36,16 @@ public class UserController {
      * @param password 본인 확인을 한번 더 확인하기 위한 비밀번호
      */
     @PostMapping("/mypage/myinfo")
-    public Myinfo myInfo(@RequestBody HashMap<String, String> password, HttpSession httpSession){
+    public Myinfo myinfo(@RequestBody HashMap<String, String> password, HttpServletRequest request){
 
-        String userEmail = (String) httpSession.getAttribute("USER_ID");
+        HttpSession session = request.getSession(false);
+        // 로그인 상태가 아니다
+        if (session == null){
+            throw new UserNotLoginException();
+        }
+        // 세션에 저장된 유저 이메일을 가져와 이메일로 해당 유저 검색
+        String userEmail = (String) session.getAttribute("USER_ID");
         User user = userService.findByEmail(userEmail);
-
         // 마이정보를 보기위해 다시 한번 비밀번호로 본인 인증
         if (!user.getUserPassword().equals(SHA256Util.getSHA256(password.get("userPassword")))){
             throw new WrongPasswordException();
@@ -55,7 +63,13 @@ public class UserController {
      *                  각 해쉬 키 -> "userPassword", "newPassword1", "newPassword2"
      */
     @PostMapping("/mypage/changepassword")
-    public void changePassword(@RequestBody HashMap<String, String> passwords, HttpSession httpSession){
+    public void changePassword(@RequestBody HashMap<String, String> passwords, HttpServletRequest request){
+
+        HttpSession session = request.getSession(false);
+
+        if (session == null){
+            throw new UserNotLoginException();
+        }
 
         // 새 비밀번호와 재입력된 새 비밀번호를 꺼낸다
         String newPassword1 = passwords.get("newPassword1");
@@ -66,7 +80,7 @@ public class UserController {
             throw new WrongPasswordException();
         }
 
-        String userEmail = (String) httpSession.getAttribute("USER_ID");
+        String userEmail = (String) session.getAttribute("USER_ID");
         User user = userService.findByEmail(userEmail);
 
         // 비밀번호 변경을 위해 다시 한번 비밀번호로 본인 인증
@@ -76,15 +90,21 @@ public class UserController {
 
         // 새 비밀번호와 이메일을 담은 객체를 이용해(새 비밀번호가 비밀번호 형태 조건 따르도록 함) 해당 유저 비밀번호 변경
         userService.changePassword(new EmailPassword(userEmail, newPassword1));
-
     }
 
     /**
      * 로그인된 상태에서 주소 목록 검색
      */
     @GetMapping("mypage/address")
-    public List<String> findAddress(HttpSession httpSession){
-        String userEmail = (String) httpSession.getAttribute("USER_ID");
+    public List<String> findAddress(HttpServletRequest request){
+
+        HttpSession session = request.getSession(false);
+
+        if (session == null){
+            throw new UserNotLoginException();
+        }
+
+        String userEmail = (String) session.getAttribute("USER_ID");
         return userService.findAddressByEmail(userEmail);
     }
 
@@ -93,12 +113,14 @@ public class UserController {
      *  @param address 새 주소가 들어있는 HashMap<String>
      */
     @PostMapping("mypage/addaddress")
-    public void addAddress(@RequestBody List<String> address, HttpSession httpSession, HttpServletResponse httpServletResponse) throws IOException {
-        String userEmail = (String) httpSession.getAttribute("USER_ID");
+    public void addAddress(@RequestBody List<String> address, HttpServletRequest request, HttpServletResponse response) throws IOException {
+
+        HttpSession session = request.getSession(false);
+        String userEmail = (String) session.getAttribute("USER_ID");
         // 새 주소 등록
         userService.addAddress(address, userEmail);
         // 새 주소 등록후 주소 목록 검색하기 위해 리다이렉트
-        httpServletResponse.sendRedirect("/users/mypage/address");
+        response.sendRedirect("/users/mypage/address");
     }
 
 
