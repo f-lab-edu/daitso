@@ -27,11 +27,19 @@ public class ProductDto {
 
     private int quantity;
 
+    private int score;
+
+    private String mainImage;
+
+    private String detailImage;
+
+    private Long deliveryFee;
+
     public ProductDto() {
     }
 
     public ProductDto(Long productId, String name, Long price, String content, LocalDateTime createdAt,
-                      LocalDateTime updatedAt, int quantity) {
+                      LocalDateTime updatedAt, int quantity, int score, String mainImage, String detailImage, Long deliveryFee) {
         this.productId = 1L;
         this.name = name;
         this.price = price;
@@ -39,6 +47,10 @@ public class ProductDto {
         this.createdAt = createdAt;
         this.updatedAt = updatedAt;
         this.quantity = quantity;
+        this.score = score;
+        this.mainImage = mainImage;
+        this.detailImage = detailImage;
+        this.deliveryFee = deliveryFee;
     }
 
     public Long getProductId() {
@@ -69,6 +81,22 @@ public class ProductDto {
         return quantity;
     }
 
+    public int getScore() {
+        return score;
+    }
+
+    public String getMainImage() {
+        return mainImage;
+    }
+
+    public String getDetailImage() {
+        return detailImage;
+    }
+
+    public Long getDeliveryFee() {
+        return deliveryFee;
+    }
+
     /**
      * stock 증가
      */
@@ -88,6 +116,13 @@ public class ProductDto {
     }
 
     /**
+     * 별점 업데이트
+     */
+    public void updateScore(int score) {
+        this.score = score;
+    }
+
+    /**
      * Builder 패턴 구현
      */
     public static class Builder {
@@ -97,6 +132,10 @@ public class ProductDto {
         private LocalDateTime createAt;
         private LocalDateTime updateAt;
         private int quantity;
+        private int score;
+        private String mainImage;
+        private String detailImage;
+        private Long deliveryFee;
 
         public Builder name(String name) {
             this.name = name;
@@ -128,8 +167,28 @@ public class ProductDto {
             return this;
         }
 
+        public Builder score(int score) {
+            this.score = score;
+            return this;
+        }
+
+        public Builder mainImage(String mainImage) {
+            this.mainImage = mainImage;
+            return this;
+        }
+
+        public Builder detailImage(String detailImage) {
+            this.detailImage = detailImage;
+            return this;
+        }
+
+        public Builder deliveryFee(Long deliveryFee) {
+            this.deliveryFee = deliveryFee;
+            return this;
+        }
+
         public ProductDto build() {
-            return new ProductDto(1L, name, price, content, createAt, updateAt, quantity);
+            return new ProductDto(1L, name, price, content, createAt, updateAt, quantity, score, mainImage, detailImage, deliveryFee);
         }
     }
 }
