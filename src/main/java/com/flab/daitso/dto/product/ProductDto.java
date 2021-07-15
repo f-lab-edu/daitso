@@ -1,5 +1,6 @@
 package com.flab.daitso.dto.product;
 
+import com.flab.daitso.dto.delivery.DeliveryChargeType;
 import com.flab.daitso.error.exception.product.NotEnoughStockException;
 
 import javax.validation.constraints.Min;
@@ -33,13 +34,13 @@ public class ProductDto {
 
     private String detailImage;
 
-    private Long deliveryFee;
+    private DeliveryChargeType deliveryChargeType;
 
     public ProductDto() {
     }
 
     public ProductDto(Long productId, String name, Long price, String content, LocalDateTime createdAt,
-                      LocalDateTime updatedAt, int quantity, int score, String mainImage, String detailImage, Long deliveryFee) {
+                      LocalDateTime updatedAt, int quantity, int score, String mainImage, String detailImage, DeliveryChargeType deliveryChargeType) {
         this.productId = 1L;
         this.name = name;
         this.price = price;
@@ -50,7 +51,7 @@ public class ProductDto {
         this.score = score;
         this.mainImage = mainImage;
         this.detailImage = detailImage;
-        this.deliveryFee = deliveryFee;
+        this.deliveryChargeType = deliveryChargeType;
     }
 
     public Long getProductId() {
@@ -93,8 +94,8 @@ public class ProductDto {
         return detailImage;
     }
 
-    public Long getDeliveryFee() {
-        return deliveryFee;
+    public DeliveryChargeType getDeliveryChargeType() {
+        return deliveryChargeType;
     }
 
     /**
@@ -135,7 +136,7 @@ public class ProductDto {
         private int score;
         private String mainImage;
         private String detailImage;
-        private Long deliveryFee;
+        private DeliveryChargeType deliveryChargeType;
 
         public Builder name(String name) {
             this.name = name;
@@ -182,13 +183,13 @@ public class ProductDto {
             return this;
         }
 
-        public Builder deliveryFee(Long deliveryFee) {
-            this.deliveryFee = deliveryFee;
+        public Builder deliveryChargeType(DeliveryChargeType deliveryChargeType) {
+            this.deliveryChargeType = deliveryChargeType;
             return this;
         }
 
         public ProductDto build() {
-            return new ProductDto(1L, name, price, content, createAt, updateAt, quantity, score, mainImage, detailImage, deliveryFee);
+            return new ProductDto(1L, name, price, content, createAt, updateAt, quantity, score, mainImage, detailImage, deliveryChargeType);
         }
     }
 }
