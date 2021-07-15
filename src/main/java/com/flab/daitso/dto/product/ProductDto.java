@@ -26,9 +26,9 @@ public class ProductDto {
 
     private LocalDateTime updatedAt = LocalDateTime.now();
 
-    private int quantity;
+    private Long quantity;
 
-    private int score;
+    private Long score;
 
     private String mainImage;
 
@@ -40,7 +40,7 @@ public class ProductDto {
     }
 
     public ProductDto(Long productId, String name, Long price, String content, LocalDateTime createdAt,
-                      LocalDateTime updatedAt, int quantity, int score, String mainImage, String detailImage, DeliveryChargeType deliveryChargeType) {
+                      LocalDateTime updatedAt, Long quantity, Long score, String mainImage, String detailImage, DeliveryChargeType deliveryChargeType) {
         this.productId = 1L;
         this.name = name;
         this.price = price;
@@ -78,11 +78,11 @@ public class ProductDto {
         return updatedAt;
     }
 
-    public int getQuantity() {
+    public Long getQuantity() {
         return quantity;
     }
 
-    public int getScore() {
+    public Long getScore() {
         return score;
     }
 
@@ -108,8 +108,8 @@ public class ProductDto {
     /**
      * stock 감소
      */
-    public void removeStock(int quantity) {
-        int restStock = this.quantity - quantity;
+    public void removeStock(Long quantity) {
+        Long restStock = this.quantity - quantity;
         if (restStock < 0) {
             throw new NotEnoughStockException();
         }
@@ -119,7 +119,7 @@ public class ProductDto {
     /**
      * 별점 업데이트
      */
-    public void updateScore(int score) {
+    public void updateScore(Long score) {
         this.score = score;
     }
 
@@ -132,8 +132,8 @@ public class ProductDto {
         private String content;
         private LocalDateTime createAt;
         private LocalDateTime updateAt;
-        private int quantity;
-        private int score;
+        private Long quantity;
+        private Long score;
         private String mainImage;
         private String detailImage;
         private DeliveryChargeType deliveryChargeType;
@@ -163,12 +163,12 @@ public class ProductDto {
             return this;
         }
 
-        public Builder quantity(int quantity) {
+        public Builder quantity(Long quantity) {
             this.quantity = quantity;
             return this;
         }
 
-        public Builder score(int score) {
+        public Builder score(Long score) {
             this.score = score;
             return this;
         }

@@ -17,13 +17,13 @@ public class CategoryController {
         this.categoryService = categoryService;
     }
 
-    @PostMapping("/manage/category/register")
+    @PostMapping("/v2/providers/api/v1/seller-products/category")
     public void registerCategory(@RequestBody @Valid Category category) {
         categoryService.saveCategory(category);
     }
 
-    @GetMapping("/np/categories/{categoryId}")
-    public List<ProductDto> getProductsInCategory(@PathVariable Long categoryId) {
-        return categoryService.findCategoryListById(categoryId);
-    }
+//    @GetMapping("/np/categories/{categoryId}")
+//    public List<ProductDto> getProductsInCategory(@PathVariable Long categoryId) {
+//        return categoryService.findProductListByCategoryId(categoryId);
+//    }
 }

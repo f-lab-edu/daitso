@@ -24,6 +24,9 @@ public class ProductService {
         this.categoryService = categoryService;
     }
 
+    /**
+     * 상품 Id로 product 찾기
+     */
     public ProductDto findProductById(Long productId) {
         ProductDto product = productMapper.findProductById(productId);
         if (product == null) {
@@ -36,6 +39,9 @@ public class ProductService {
         return product;
     }
 
+    /**
+     * 상품명으로 product 찾기
+     */
     public ProductDto findProductByName(String name) {
         ProductDto product = productMapper.findProductByName(name);
         if (product == null) {
@@ -45,6 +51,9 @@ public class ProductService {
         return product;
     }
 
+    /**
+     * 상품 등록하기
+     */
     public Long registerProduct(ProductDto productDto) {
         DuplicateProductName(productDto);
         productMapper.register(productDto);
@@ -52,6 +61,9 @@ public class ProductService {
         return productDto.getProductId();
     }
 
+    /**
+     * 중복된 상품명 검사
+     */
     private void DuplicateProductName(ProductDto productDto) {
         ProductDto findProduct = productMapper.findProductByName(productDto.getName());
         if (findProduct != null) {
@@ -59,6 +71,9 @@ public class ProductService {
         }
     }
 
+    /**
+     * 상품 삭제하기
+     */
     public void deleteProduct(Long productId) {
         ProductDto findProduct = productMapper.findProductById(productId);
 
@@ -68,6 +83,9 @@ public class ProductService {
         productMapper.delete(productId);
     }
 
+    /**
+     * 카테고리에 상품 넣기
+     */
     public Category saveProductInCategory(Long categoryId, List<ProductDto> products) {
         Category findCategory = categoryService.findById(categoryId);
         for (ProductDto product : products) {
@@ -77,5 +95,35 @@ public class ProductService {
         }
 
         return findCategory;
+    }
+
+    /**
+     * 별점 - 1 ~ 별점로 상품 리스트 조회하기
+     */
+    public List<ProductDto> findProductListByScoreRange(Long categoryId, Long score) {
+        if (score == 0) {
+            return categoryService.findProductListByCategoryId(categoryId);
+        }
+        return productMapper.findProductListByScoreRange(categoryId, score);
+    }
+
+    /**
+     * 가격으로 상품 리스트 조회하기
+     */
+    public List<ProductDto> findProductListByPriceRange(Long categoryId, Long minPrice, Long maxPrice) {
+        return productMapper.findProductListByPriceRange(categoryId, minPrice, maxPrice);
+    }
+
+    /**
+     * 최신순으로 상품 리스트 조회하기
+     * sorter
+     * 0 --> 최신순
+     * 1 -->
+     */
+    public List<ProductDto> findProductListByLatestOrder(Long categoryId, Long sorter) {
+        if (sorter == 0) {
+            return productMapper.findProductListByLatestOrder(categoryId);
+        }
+        return productMapper.findProductListByLatestOrder(categoryId);
     }
 }

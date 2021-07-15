@@ -42,4 +42,26 @@
         INSERT INTO product_category (category_id, product_id)
         VALUES (#{categoryId}, #{productId})
     </insert>
+
+    <select id="findProductListByScoreRange" parameterType="Long" resultType="com.flab.daitso.dto.product.ProductDto">
+        SELECT p.product_id, p.name, p.price, p.content, p.created_at, p.updated_at, p.quantity, p.score, p.main_image
+        FROM product p
+        WHERE (p.score &gt;= #{score} - 1) AND (p.score &lt; #{score}) AND (p.product_id IN
+            (SELECT pc.product_id FROM product_category pc JOIN category c ON pc.category_id = c.category_id
+                WHERE c.category_id = #{categoryId} OR c.parent_id = #{categoryId}))
+    </select>
+
+    <select id="findProductListByPriceRange" parameterType="Long" resultType="com.flab.daitso.dto.product.ProductDto">
+        SELECT p.product_id, p.name, p.price, p.content, p.created_at, p.updated_at, p.quantity, p.score, p.main_image
+        FROM product p
+        WHERE (p.price &gt;= #{minPrice}) AND (p.price &lt; #{maxPrice}) AND (p.product_id IN
+            (SELECT pc.product_id FROM product_category pc JOIN category c ON pc.category_id = c.category_id
+                WHERE c.category_id = #{categoryId} OR c.parent_id = #{categoryId}))
+    </select>
+
+    <select id="findProductListByLatestOrder" parameterType="Long" resultType="com.flab.daitso.dto.product.ProductDto">
+        SELECT p.product_id, p.name, p.price, p.content, p.created_at, p.updated_at, p.quantity, p.score, p.main_image
+        FROM product p
+        ORDER BY updated_at DESC
+    </select>
 </mapper>
