@@ -176,4 +176,86 @@ class ProductServiceTest {
 
         assertThrows(NotFoundException.class, () -> productService.findProductById(productId));
     }
+
+    @Test
+    @DisplayName("가격으로 상품 리스트 가져오기")
+    public void 가격으로_상품_리스트_가져오기() {
+        List<ProductDto> products = new ArrayList<>();
+
+        Category carGoods = new Category("car goods");
+        Category interior = new Category("interior");
+
+        carGoods.addChildCategory(interior);
+
+        Long carGoodsId = categoryService.saveCategory(carGoods);
+        Long interiorId = categoryService.saveCategory(interior);
+
+        ProductDto productDto1 = new ProductDto.Builder()
+                .name("test1")
+                .price(10000L)
+                .content("test1 상품입니다.")
+                .score(4L)
+                .build();
+
+        ProductDto productDto2 = new ProductDto.Builder()
+                .name("test2")
+                .price(20000L)
+                .content("test2 상품입니다.")
+                .score(4L)
+                .build();
+
+        productService.registerProduct(productDto1);
+        productService.registerProduct(productDto2);
+
+        products.add(productDto1);
+        products.add(productDto2);
+
+        productService.saveProductInCategory(interiorId, products);
+
+        List<ProductDto> productList = productService.findProductListByPriceRange(interiorId, 10000L, 20000L);
+
+        assertThat(productList.size()).isEqualTo(1);
+    }
+
+    @Test
+    @DisplayName("최신순으로 상품 리스트 가져오기")
+    public void 최신순으로_상품_리스트_가져오기() throws InterruptedException {
+        List<ProductDto> products = new ArrayList<>();
+
+        Category carGoods = new Category("car goods");
+        Category interior = new Category("interior");
+
+        carGoods.addChildCategory(interior);
+
+        Long carGoodsId = categoryService.saveCategory(carGoods);
+        Long interiorId = categoryService.saveCategory(interior);
+
+        ProductDto productDto1 = new ProductDto.Builder()
+                .name("test1")
+                .price(10000L)
+                .content("test1 상품입니다.")
+                .score(4L)
+                .build();
+
+        ProductDto productDto2 = new ProductDto.Builder()
+                .name("test2")
+                .price(20000L)
+                .content("test2 상품입니다.")
+                .score(4L)
+                .build();
+
+        productService.registerProduct(productDto1);
+        Thread.sleep(1000);
+        productService.registerProduct(productDto2);
+
+        products.add(productDto1);
+        products.add(productDto2);
+
+        productService.saveProductInCategory(interiorId, products);
+
+        List<ProductDto> productList = productService.findProductListByLatestOrder(interiorId, 0L);
+
+        assertThat(productList.get(0).getProductId()).isEqualTo(productDto2.getProductId());
+        assertThat(productList.get(1).getProductId()).isEqualTo(productDto1.getProductId());
+    }
 }

@@ -21,5 +21,12 @@ public interface ProductMapper {
     void delete(Long productId);
 
     void saveProductInCategory(@Param("categoryId") Long categoryId, @Param("productId") Long productId);
+
+    List<ProductDto> findProductListByScoreRange(@Param("categoryId") Long categoryId, @Param("score") Long score);
+
+    List<ProductDto> findProductListByPriceRange(@Param("categoryId") Long categoryId, @Param("minPrice") Long minPrice, @Param("maxPrice") Long maxPrice);
+
+    List<ProductDto> findProductListByLatestOrder(Long categoryId);
+
 }
 

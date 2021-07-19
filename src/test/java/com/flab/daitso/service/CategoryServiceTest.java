@@ -129,8 +129,8 @@ class CategoryServiceTest {
 
         productService.saveProductInCategory(interiorId, products);
 
-        assertThat(categoryService.findCategoryListById(interiorId).get(0).getName()).isEqualTo(productDto1.getName());
-        assertThat(categoryService.findCategoryListById(interiorId).get(1).getName()).isEqualTo(productDto2.getName());
+        assertThat(categoryService.findProductListByCategoryId(interiorId).get(0).getName()).isEqualTo(productDto1.getName());
+        assertThat(categoryService.findProductListByCategoryId(interiorId).get(1).getName()).isEqualTo(productDto2.getName());
     }
 
     @Test

@@ -1,5 +1,6 @@
 package com.flab.daitso.dto.product;
 
+import com.flab.daitso.dto.delivery.DeliveryChargeType;
 import com.flab.daitso.error.exception.product.NotEnoughStockException;
 
 import javax.validation.constraints.Min;
@@ -25,13 +26,21 @@ public class ProductDto {
 
     private LocalDateTime updatedAt = LocalDateTime.now();
 
-    private int quantity;
+    private Long quantity;
+
+    private Long score;
+
+    private String mainImage;
+
+    private String detailImage;
+
+    private DeliveryChargeType deliveryChargeType;
 
     public ProductDto() {
     }
 
     public ProductDto(Long productId, String name, Long price, String content, LocalDateTime createdAt,
-                      LocalDateTime updatedAt, int quantity) {
+                      LocalDateTime updatedAt, Long quantity, Long score, String mainImage, String detailImage, DeliveryChargeType deliveryChargeType) {
         this.productId = 1L;
         this.name = name;
         this.price = price;
@@ -39,6 +48,10 @@ public class ProductDto {
         this.createdAt = createdAt;
         this.updatedAt = updatedAt;
         this.quantity = quantity;
+        this.score = score;
+        this.mainImage = mainImage;
+        this.detailImage = detailImage;
+        this.deliveryChargeType = deliveryChargeType;
     }
 
     public Long getProductId() {
@@ -65,8 +78,24 @@ public class ProductDto {
         return updatedAt;
     }
 
-    public int getQuantity() {
+    public Long getQuantity() {
         return quantity;
+    }
+
+    public Long getScore() {
+        return score;
+    }
+
+    public String getMainImage() {
+        return mainImage;
+    }
+
+    public String getDetailImage() {
+        return detailImage;
+    }
+
+    public DeliveryChargeType getDeliveryChargeType() {
+        return deliveryChargeType;
     }
 
     /**
@@ -79,12 +108,20 @@ public class ProductDto {
     /**
      * stock 감소
      */
-    public void removeStock(int quantity) {
-        int restStock = this.quantity - quantity;
+    public void removeStock(Long quantity) {
+        Long restStock = this.quantity - quantity;
         if (restStock < 0) {
+            this.quantity = 0L;
             throw new NotEnoughStockException();
         }
         this.quantity = restStock;
+    }
+
+    /**
+     * 별점 업데이트
+     */
+    public void updateScore(Long score) {
+        this.score = score;
     }
 
     /**
@@ -96,7 +133,11 @@ public class ProductDto {
         private String content;
         private LocalDateTime createAt;
         private LocalDateTime updateAt;
-        private int quantity;
+        private Long quantity;
+        private Long score;
+        private String mainImage;
+        private String detailImage;
+        private DeliveryChargeType deliveryChargeType;
 
         public Builder name(String name) {
             this.name = name;
@@ -123,13 +164,33 @@ public class ProductDto {
             return this;
         }
 
-        public Builder quantity(int quantity) {
+        public Builder quantity(Long quantity) {
             this.quantity = quantity;
             return this;
         }
 
+        public Builder score(Long score) {
+            this.score = score;
+            return this;
+        }
+
+        public Builder mainImage(String mainImage) {
+            this.mainImage = mainImage;
+            return this;
+        }
+
+        public Builder detailImage(String detailImage) {
+            this.detailImage = detailImage;
+            return this;
+        }
+
+        public Builder deliveryChargeType(DeliveryChargeType deliveryChargeType) {
+            this.deliveryChargeType = deliveryChargeType;
+            return this;
+        }
+
         public ProductDto build() {
-            return new ProductDto(1L, name, price, content, createAt, updateAt, quantity);
+            return new ProductDto(1L, name, price, content, createAt, updateAt, quantity, score, mainImage, detailImage, deliveryChargeType);
         }
     }
 }
