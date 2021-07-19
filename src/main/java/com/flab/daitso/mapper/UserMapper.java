@@ -1,8 +1,6 @@
 package com.flab.daitso.mapper;
 
-import com.flab.daitso.dto.user.EmailPassword;
-import com.flab.daitso.dto.user.User;
-import com.flab.daitso.dto.user.UserLoginRequest;
+import com.flab.daitso.dto.user.*;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 
@@ -17,11 +15,15 @@ public interface UserMapper {
 
     User findByUserEmailAndUserPassword(UserLoginRequest userLoginRequest);
 
-    void saveAddress(@Param("userEmail") String userEmail, @Param("address") String address);
+    void saveAddress(@Param("userId") int userId, @Param("addressDto") Address addressDto);
 
-    List<String> findAddressByEmail(String userEmail);
+    List<Address> findAddressById(int userId);
 
     void changePassword(EmailPassword emailPassword);
 
     void savePaymentOption(@Param("userEmail") String userEmail, @Param("paymentoption") int option);
+
+    List<Integer> findPaymentOption(String userEmail);
+
+    User findById(int userId);
 }

@@ -29,29 +29,15 @@ public class UserRegister {
             message = "전화번호는 13자리 이내로 입력하세요.")
     private String phoneNumber;
 
-    // 주소를 2개 이상 입력 할 수 있어 List<String> 으로 정의
-    @NotNull(message = "주소를 입력 해주세요 ㅠㅠ")
-    @Size(min = 1, message = "주소를 하나 이상 입력 해주세요 ㅠㅠ")
-    private List<String> address;
-
-    // 회원가입시에 결제수단을 1개 이상 추가 할 수도 있고 안 할 수도 있다
-    private List<PaymentOption> paymentOptions;
-
     private final Role role = Role.USER;
 
     private final LocalDateTime registrationDate = LocalDateTime.now();
 
-    public UserRegister(String userEmail, String userPassword, String name, String phoneNumber, List<String> address, List<PaymentOption> paymentOptions) {
+    public UserRegister(String userEmail, String userPassword, String name, String phoneNumber) {
         this.userEmail = userEmail;
         this.userPassword = userPassword;
         this.name = name;
         this.phoneNumber = phoneNumber;
-        this.address = address;
-        this.paymentOptions = paymentOptions;
-    }
-
-    public List<String> getAddress() {
-        return address;
     }
 
     public String getUserEmail() {
@@ -74,10 +60,6 @@ public class UserRegister {
         return role;
     }
 
-    public List<PaymentOption> getPaymentOptions() {
-        return paymentOptions;
-    }
-
     public LocalDateTime getRegistrationDate() {
         return registrationDate;
     }
@@ -89,8 +71,6 @@ public class UserRegister {
                 ", userPassword='" + userPassword + '\'' +
                 ", name='" + name + '\'' +
                 ", phoneNumber='" + phoneNumber + '\'' +
-                ", address=" + address +
-                ", paymentOptions=" + paymentOptions +
                 ", role=" + role +
                 ", registrationDate=" + registrationDate +
                 '}';

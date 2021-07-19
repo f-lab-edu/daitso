@@ -7,9 +7,9 @@ public class Myinfo {
     private final String userEmail;
     private final String userName;
     private final String phoneNumber;
-    private final List<String> userAddress;
+    private final List<Address> userAddress;
 
-    public Myinfo(String userEmail, String userName, String phoneNumber, List<String> userAddress) {
+    public Myinfo(String userEmail, String userName, String phoneNumber, List<Address> userAddress) {
         this.userEmail = userEmail;
         this.userName = userName;
         this.phoneNumber = phoneNumber;
@@ -28,7 +28,7 @@ public class Myinfo {
         return phoneNumber;
     }
 
-    public List<String> getUserAddress() {
+    public List<Address> getUserAddress() {
         return userAddress;
     }
 

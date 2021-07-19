@@ -23,10 +23,10 @@ public class UserLoginController {
 
     @PostMapping("/login")
     public User login(@RequestBody @Valid UserLoginRequest userLoginRequest, HttpServletRequest httpServletRequest) {
-
         User user = userService.login(userLoginRequest);
         HttpSession session = httpServletRequest.getSession();
-        session.setAttribute("USER_ID", userLoginRequest.getUserEmail());
+        // 유저 식별자로 사용하기 위한 유저 id(pk) 를 세션에 저장
+        session.setAttribute("USER_ID", user.getId());
         return user;
     }
 

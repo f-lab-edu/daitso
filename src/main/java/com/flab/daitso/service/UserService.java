@@ -21,7 +21,6 @@ public class UserService {
         this.userMapper = userMapper;
     }
 
-    @Transactional
     public String signup(@Valid UserRegister userRegister) {
         validateDuplicateUser(userRegister);
         String encryptedPassword = SHA256Util.getSHA256(userRegister.getUserPassword());
@@ -38,13 +37,6 @@ public class UserService {
         // 고객 정보 저장
         userMapper.save(user);
 
-        // 리스트 내 각 주소를 반복문으로 돌며 이메일(외래키)과 함께 저장
-        userRegister.getAddress().forEach(address -> userMapper.saveAddress(user.getUserEmail(), address));
-
-        // 결제수단이 하나라도 있을시 반복문을 돌며 이메일(외래키)과 함께 저장
-        if (userRegister.getPaymentOptions() != null){
-            userRegister.getPaymentOptions().forEach(paymentoption -> userMapper.savePaymentOption(user.getUserEmail(), paymentoption.getOption()));
-        }
         return user.getUserEmail();
     }
 
@@ -83,12 +75,11 @@ public class UserService {
         return userMapper.findByUserEmail(email);
     }
 
-    public List<String> findAddressByEmail(String userEmail) {
-        return userMapper.findAddressByEmail(userEmail);
+    public List<Address> findAddressById(int userId) {
+        return userMapper.findAddressById(userId);
     }
 
     public void changePassword(EmailPassword emailPassword) {
-
         // 객체 내 비밀번호 암호화
         emailPassword.setUserPassword(SHA256Util.getSHA256(emailPassword.getUserPassword()));
         // 비밀번호 변경
@@ -96,10 +87,16 @@ public class UserService {
     }
 
     @Transactional
-    public void addAddress(List<String> address, String userEmail) {
+    public void addAddress(Address addressDto, int userId) {
+        // 주소 정보가 담긴 addressDto 와 고유한 유저 식별자 userId 를 넘겨 db 에 새 주소 추가
+        userMapper.saveAddress(userId, addressDto);
+    }
 
-        // 리스트 내 각 주소를 반복문으로 돌며 이메일(외래키)과 함께 저장
-        address.forEach(x -> userMapper.saveAddress(userEmail, x));
+    public List<Integer> findPaymentOption(String userEmail) {
+        return userMapper.findPaymentOption(userEmail);
+    }
 
+    public User findById(int userId) {
+        return userMapper.findById(userId);
     }
 }
