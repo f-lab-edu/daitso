@@ -111,6 +111,7 @@ public class ProductDto {
     public void removeStock(Long quantity) {
         Long restStock = this.quantity - quantity;
         if (restStock < 0) {
+            this.quantity = 0L;
             throw new NotEnoughStockException();
         }
         this.quantity = restStock;
