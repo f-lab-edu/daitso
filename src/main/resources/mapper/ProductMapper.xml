@@ -2,92 +2,66 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
 <mapper namespace="com.flab.daitso.mapper.ProductMapper">
-
-    <select id="getProducts" parameterType="int" resultType="com.flab.daitso.dto.product.ProductDto">
-        select
-            pid,
-            categoryId,
-            name,
-            price,
-            content,
-            createdAt,
-            updatedAt,
-            quantity
-        from
-            product
-        where
-            deleted = 'N' and
-            categoryId = #{id}
+    <select id="findProductByName" parameterType="String" resultType="com.flab.daitso.dto.product.ProductDto">
+        select product_id, name, price, content, created_at, updated_at, quantity
+        from product
+        where deleted = 'N'
+          and name = #{name}
     </select>
 
-    <select id="getProduct" parameterType="int" resultType="com.flab.daitso.dto.product.ProductDto">
-        select
-            pid,
-            categoryId,
-            name,
-            price,
-            content,
-            createdAt,
-            updatedAt,
-            quantity
-        from
-            product
-        where
-            deleted = 'N' and
-            pid= #{pid}
+    <select id="findProductById" parameterType="Long" resultType="com.flab.daitso.dto.product.ProductDto">
+        select product_id, name, price, content, created_at, updated_at, quantity
+        from product
+        where deleted = 'N'
+          and product_id = #{productId}
     </select>
 
-    <select id="getProductByCidName" resultType="com.flab.daitso.dto.product.ProductDto">
-        select
-            pid,
-            categoryId,
-            name,
-            price,
-            content,
-            createdAt,
-            updatedAt,
-            quantity
-        from
-            product
-        where
-            deleted = 'N' and
-            categoryId = #{categoryId} and
-            name = #{productName}
-    </select>
-
-    <update id="increaseQuantity" parameterType="int">
-        update product set
-            quantity = quantity+1,
+    <update id="increaseQuantity" parameterType="Long">
+        update product
+        set quantity  = quantity + 1,
             updatedAt = NOW()
-        where
-            pid = #{pid}
+        where product_id = #{productId}
     </update>
 
-    <insert id="registerProduct" parameterType="com.flab.daitso.dto.product.ProductDto">
-        insert into product
-        (
-        categoryId,
-        name,
-        price,
-        content,
-        createdAt
-        )
-        values
-        (
-        #{categoryId},
-        #{name},
-        #{price},
-        #{content},
-        NOW()
-        )
+    <insert id="register" parameterType="com.flab.daitso.dto.product.ProductDto" useGeneratedKeys="true" keyProperty="productId">
+        INSERT INTO product (name, price, content)
+        VALUES (#{name}, #{price}, #{content})
+        <selectKey keyProperty="productId" resultType="Long">
+            SELECT LAST_INSERT_ID()
+        </selectKey>
     </insert>
 
-    <update id="deleteProduct" parameterType="int">
-        update product set
-        deleted = 'Y',
-        updatedAt = NOW()
-        where
-            pid = #{pid}
+    <update id="delete" parameterType="Long">
+        update product
+        set deleted   = 'Y',
+            updated_at = NOW()
+        where product_id = #{productId}
     </update>
 
+    <insert id="saveProductInCategory" parameterType="Long">
+        INSERT INTO product_category (category_id, product_id)
+        VALUES (#{categoryId}, #{productId})
+    </insert>
+
+    <select id="findProductListByScoreRange" parameterType="Long" resultType="com.flab.daitso.dto.product.ProductDto">
+        SELECT p.product_id, p.name, p.price, p.content, p.created_at, p.updated_at, p.quantity, p.score, p.main_image
+        FROM product p
+        WHERE (p.score &gt;= #{score} - 1) AND (p.score &lt; #{score}) AND (p.product_id IN
+            (SELECT pc.product_id FROM product_category pc JOIN category c ON pc.category_id = c.category_id
+                WHERE c.category_id = #{categoryId} OR c.parent_id = #{categoryId}))
+    </select>
+
+    <select id="findProductListByPriceRange" parameterType="Long" resultType="com.flab.daitso.dto.product.ProductDto">
+        SELECT p.product_id, p.name, p.price, p.content, p.created_at, p.updated_at, p.quantity, p.score, p.main_image
+        FROM product p
+        WHERE (p.price &gt;= #{minPrice}) AND (p.price &lt; #{maxPrice}) AND (p.product_id IN
+            (SELECT pc.product_id FROM product_category pc JOIN category c ON pc.category_id = c.category_id
+                WHERE c.category_id = #{categoryId} OR c.parent_id = #{categoryId}))
+    </select>
+
+    <select id="findProductListByLatestOrder" parameterType="Long" resultType="com.flab.daitso.dto.product.ProductDto">
+        SELECT p.product_id, p.name, p.price, p.content, p.created_at, p.updated_at, p.quantity, p.score, p.main_image
+        FROM product p
+        ORDER BY updated_at DESC
+    </select>
 </mapper>

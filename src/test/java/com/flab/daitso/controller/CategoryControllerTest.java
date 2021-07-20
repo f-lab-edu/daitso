@@ -8,7 +8,6 @@ import com.flab.daitso.service.ProductService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -24,16 +23,15 @@ import org.springframework.web.filter.CharacterEncodingFilter;
 import java.util.ArrayList;
 import java.util.List;
 
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @ExtendWith(SpringExtension.class)
-@Transactional
-@AutoConfigureMockMvc
 @SpringBootTest
-public class ProductControllerTest {
+@AutoConfigureMockMvc
+@Transactional
+class CategoryControllerTest {
 
     @Autowired
     private MockMvc mvc;
@@ -59,69 +57,8 @@ public class ProductControllerTest {
     }
 
     @Test
-    @DisplayName("상품 등록 테스트")
-    public void 상품_등록_테스트() throws Exception {
-        ProductDto productDto = new ProductDto.Builder()
-                .name("test1")
-                .price(10000L)
-                .content("test 상품입니다.")
-                .build();
-
-        mvc.perform(post("/v2/providers/api/v1/seller-products")
-                .content(objectMapper.writeValueAsString(productDto))
-                .contentType(MediaType.APPLICATION_JSON))
-                .andDo(print())
-                .andExpect(status().isOk());
-    }
-
-    @Test
-    @DisplayName("상품 아이디 해당 상품을 제대로 검색하는지 테스트")
-    public void 상품_아이디로_검색_테스트() throws Exception {
-        ProductDto productDto = new ProductDto.Builder()
-                .name("test1")
-                .price(20000L)
-                .content("test1 상품입니다.")
-                .build();
-        productService.registerProduct(productDto);
-
-        ProductDto product = productService.findProductByName("test1");
-
-        mvc.perform(get("/v2/providers/api/v1/seller-products/" + product.getProductId())
-                .contentType(MediaType.APPLICATION_JSON))
-                .andExpect(status().isOk())
-                .andDo(print());
-    }
-
-
-    @Test
-    @DisplayName("상품 아이디 해당 상품을 제대로 검색하는지 테스트")
-    public void 존재하지_않는_상품_테스트() throws Exception {
-        mvc.perform(get("/v2/providers/api/v1/seller-products/" + -1)
-                .contentType(MediaType.APPLICATION_JSON))
-                .andExpect(status().isBadRequest())
-                .andExpect(content().string("NotFoundException"))
-                .andDo(print());
-    }
-
-    @Test
-    @DisplayName("상품 아이디로 상품 삭제")
-    public void 상품_아이디로_상품_삭제() throws Exception {
-        ProductDto product = new ProductDto.Builder()
-                .name("test1")
-                .price(20000L)
-                .content("test1 상품입니다.")
-                .build();
-        productService.registerProduct(product);
-
-        mvc.perform(delete("/v2/providers/api/v1/seller-products/" + product.getProductId())
-                .contentType(MediaType.APPLICATION_JSON))
-                .andExpect(status().isOk())
-                .andDo(print());
-    }
-
-    @Test
-    @DisplayName("별점으로 상품 리스트 반환")
-    public void 별점으로_상품_리스트_반환() throws Exception {
+    @DisplayName("카테고리별 상품 목록 조회 테스트")
+    public void 카테고리별_상품_목록_조회_테스트() throws Exception {
         List<ProductDto> products1 = new ArrayList<>();
         List<ProductDto> products2 = new ArrayList<>();
 
@@ -166,10 +103,8 @@ public class ProductControllerTest {
         productService.saveProductInCategory(seatId, products2);
 
         mvc.perform(get("/np/categories/" + interiorId)
-                .param("score", "0")
                 .contentType(MediaType.APPLICATION_JSON))
-                .andDo(print())
-                .andExpect(status().isOk());
-
+                .andExpect(status().isOk())
+                .andDo(print());
     }
 }

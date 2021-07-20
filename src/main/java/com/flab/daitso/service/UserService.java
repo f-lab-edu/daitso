@@ -1,9 +1,13 @@
 package com.flab.daitso.service;
 
-import com.flab.daitso.dto.user.*;
-import com.flab.daitso.error.exception.ExistingIdException;
-import com.flab.daitso.error.exception.NotExistingIdException;
-import com.flab.daitso.error.exception.WrongPasswordException;
+
+import com.flab.daitso.dto.user.User;
+import com.flab.daitso.dto.user.UserLoginRequest;
+import com.flab.daitso.dto.user.UserRegister;
+import com.flab.daitso.error.exception.user.ExistingIdException;
+import com.flab.daitso.error.exception.user.NotExistingIdException;
+import com.flab.daitso.error.exception.user.WrongPasswordException;
+
 import com.flab.daitso.mapper.UserMapper;
 import com.flab.daitso.utils.SHA256Util;
 import org.springframework.stereotype.Service;
