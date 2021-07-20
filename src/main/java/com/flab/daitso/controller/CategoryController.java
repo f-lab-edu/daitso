@@ -1,29 +1,31 @@
 package com.flab.daitso.controller;
 
 import com.flab.daitso.dto.product.Category;
-import com.flab.daitso.dto.product.ProductDto;
 import com.flab.daitso.service.CategoryService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
-import java.util.List;
 
 @RestController
+@RequestMapping("/api/categories")
 public class CategoryController {
 
     private final CategoryService categoryService;
 
+    @Autowired
     public CategoryController(CategoryService categoryService) {
         this.categoryService = categoryService;
     }
 
-    @PostMapping("/v2/providers/api/v1/seller-products/category")
+    @PostMapping
     public void registerCategory(@RequestBody @Valid Category category) {
         categoryService.saveCategory(category);
     }
 
 //    @GetMapping("/np/categories/{categoryId}")
 //    public List<ProductDto> getProductsInCategory(@PathVariable Long categoryId) {
-//        return categoryService.findProductListByCategoryId(categoryId);
+//        return
+//        categoryService.findProductListByCategoryId(categoryId);
 //    }
 }

@@ -67,7 +67,7 @@ public class ProductControllerTest {
                 .content("test 상품입니다.")
                 .build();
 
-        mvc.perform(post("/v2/providers/api/v1/seller-products")
+        mvc.perform(post("/api/products")
                 .content(objectMapper.writeValueAsString(productDto))
                 .contentType(MediaType.APPLICATION_JSON))
                 .andDo(print())
@@ -86,7 +86,7 @@ public class ProductControllerTest {
 
         ProductDto product = productService.findProductByName("test1");
 
-        mvc.perform(get("/v2/providers/api/v1/seller-products/" + product.getProductId())
+        mvc.perform(get("/api/products/" + product.getProductId())
                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andDo(print());
@@ -96,7 +96,7 @@ public class ProductControllerTest {
     @Test
     @DisplayName("상품 아이디 해당 상품을 제대로 검색하는지 테스트")
     public void 존재하지_않는_상품_테스트() throws Exception {
-        mvc.perform(get("/v2/providers/api/v1/seller-products/" + -1)
+        mvc.perform(get("/api/products/" + -1)
                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isBadRequest())
                 .andExpect(content().string("NotFoundException"))
@@ -113,7 +113,7 @@ public class ProductControllerTest {
                 .build();
         productService.registerProduct(product);
 
-        mvc.perform(delete("/v2/providers/api/v1/seller-products/" + product.getProductId())
+        mvc.perform(delete("/api/products/" + product.getProductId())
                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andDo(print());
@@ -165,11 +165,10 @@ public class ProductControllerTest {
         productService.saveProductInCategory(interiorId, products1);
         productService.saveProductInCategory(seatId, products2);
 
-        mvc.perform(get("/np/categories/" + interiorId)
+        mvc.perform(get("/api/products/categories/" + interiorId)
                 .param("score", "0")
                 .contentType(MediaType.APPLICATION_JSON))
                 .andDo(print())
                 .andExpect(status().isOk());
-
     }
 }

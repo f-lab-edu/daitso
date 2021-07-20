@@ -102,7 +102,7 @@ class CategoryControllerTest {
         productService.saveProductInCategory(interiorId, products1);
         productService.saveProductInCategory(seatId, products2);
 
-        mvc.perform(get("/np/categories/" + interiorId)
+        mvc.perform(get("/api/categories/" + interiorId)
                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andDo(print());
