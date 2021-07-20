@@ -50,4 +50,34 @@ public class ProductController {
         productService.saveProductInCategory(categoryId, products);
     }
      */
+
+    @GetMapping("/categories/{categoryId}")
+    public List<ProductDto> getProductListBySort(@PathVariable Long categoryId,
+                                                 @RequestParam(value = "score", required = false, defaultValue = "0") Long score,
+                                                 @RequestParam(value = "minPrice", required = false, defaultValue = "0") Long minPrice,
+                                                 @RequestParam(value = "maxPrice", required = false, defaultValue = "0") Long maxPrice,
+                                                 @RequestParam(value = "sorter", required = false, defaultValue = "0") Long sorter) {
+        if (score > 0) {
+            return getProductListByScoreRange(categoryId, score);
+        }
+        if (minPrice > 0 && (minPrice <= maxPrice)) {
+            return getProductListByPriceRange(categoryId, minPrice, maxPrice);
+        }
+        if (sorter >= 0) {
+            return getProductListByLatestOrder(categoryId, sorter);
+        }
+        return productService.findProductListByScoreRange(categoryId, 0L);
+    }
+
+    private List<ProductDto> getProductListByScoreRange(Long categoryId, Long score) {
+        return productService.findProductListByScoreRange(categoryId, score);
+    }
+
+    private List<ProductDto> getProductListByPriceRange(Long categoryId, Long minPrice, Long maxPrice) {
+        return productService.findProductListByPriceRange(categoryId, minPrice, maxPrice);
+    }
+
+    private List<ProductDto> getProductListByLatestOrder(Long categoryId, Long sorter) {
+        return productService.findProductListByLatestOrder(categoryId, sorter);
+    }
 }
