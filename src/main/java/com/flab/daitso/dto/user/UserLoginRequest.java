@@ -31,4 +31,12 @@ public class UserLoginRequest {
     public void setUserPassword(String userPassword) {
         this.userPassword = userPassword;
     }
+
+    @Override
+    public String toString() {
+        return "UserLoginRequest{" +
+                "userEmail='" + userEmail + '\'' +
+                ", userPassword='" + userPassword + '\'' +
+                '}';
+    }
 }

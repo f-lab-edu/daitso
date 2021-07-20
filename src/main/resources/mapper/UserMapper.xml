@@ -6,10 +6,21 @@
         VALUES (#{userEmail}, #{userPassword}, #{name}, #{phoneNumber}, #{role}, #{registrationDate})
     </insert>
 
-    <select id="findByUserEmail" resultType="com.flab.daitso.dto.user.User">
+    <insert id="saveAddress">
+        INSERT INTO address(zipcode, si, gu, dong, address, userId)
+        VALUES (#{addressDto.zipcode}, #{addressDto.si}, #{addressDto.gu}, #{addressDto.dong}, #{addressDto.address}, #{userId})
+    </insert>
+
+    <select id="findByUserEmail" parameterType="String" resultType="com.flab.daitso.dto.user.User">
         SELECT *
         FROM user
         WHERE user_email = #{userEmail}
+    </select>
+
+    <select id="findAddressById" parameterType="int" resultType="com.flab.daitso.dto.user.Address">
+        SELECT zipcode, si, gu, dong, address, userId
+        FROM address
+        WHERE userId = #{userId}
     </select>
 
     <select id="findByUserEmailAndUserPassword" resultType="com.flab.daitso.dto.user.User">
@@ -17,5 +28,26 @@
         FROM user
         WHERE user_email = #{userEmail}
           AND user_password = #{userPassword}
+    </select>
+
+    <update id="changePassword">
+        update user set
+            userPassword = #{userPassword}
+        where
+            id = #{userId}
+    </update>
+
+    <insert id="savePaymentOption">
+        INSERT INTO paymentoption(userEmail, paymentoption)
+        VALUES (#{userEmail}, #{paymentoption})
+    </insert>
+
+    <select id="findPaymentOption" resultType="int">
+        select paymentoption from paymentoption
+        where userEmail = #{userEmail}
+    </select>
+
+    <select id="findById" parameterType="int" resultType="com.flab.daitso.dto.user.User">
+        select * from user where id = #{userId}
     </select>
 </mapper>

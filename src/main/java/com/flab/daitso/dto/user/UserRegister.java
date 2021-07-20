@@ -2,10 +2,9 @@ package com.flab.daitso.dto.user;
 
 import org.hibernate.validator.constraints.Length;
 
-import javax.validation.constraints.Email;
-import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.Pattern;
+import javax.validation.constraints.*;
 import java.time.LocalDateTime;
+import java.util.List;
 
 public class UserRegister {
 
@@ -30,9 +29,9 @@ public class UserRegister {
             message = "전화번호는 13자리 이내로 입력하세요.")
     private String phoneNumber;
 
-    private Role role = Role.USER;
+    private final Role role = Role.USER;
 
-    private LocalDateTime registrationDate = LocalDateTime.now();
+    private final LocalDateTime registrationDate = LocalDateTime.now();
 
     public UserRegister(String userEmail, String userPassword, String name, String phoneNumber) {
         this.userEmail = userEmail;
@@ -63,5 +62,17 @@ public class UserRegister {
 
     public LocalDateTime getRegistrationDate() {
         return registrationDate;
+    }
+
+    @Override
+    public String toString() {
+        return "UserRegister{" +
+                "userEmail='" + userEmail + '\'' +
+                ", userPassword='" + userPassword + '\'' +
+                ", name='" + name + '\'' +
+                ", phoneNumber='" + phoneNumber + '\'' +
+                ", role=" + role +
+                ", registrationDate=" + registrationDate +
+                '}';
     }
 }

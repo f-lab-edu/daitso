@@ -1,6 +1,7 @@
 package com.flab.daitso.dto.user;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 public class User {
 
@@ -20,6 +21,11 @@ public class User {
         this.phoneNumber = phoneNumber;
         this.role = role;
         this.registrationDate = registrationDate;
+
+    }
+
+    public Long getId() {
+        return id;
     }
 
     public String getUserEmail() {
@@ -46,6 +52,7 @@ public class User {
         return registrationDate;
     }
 
+
     /**
      * Builder 패턴 구현
      */
@@ -56,6 +63,7 @@ public class User {
         private String phoneNumber;
         private Role role;
         private LocalDateTime registrationDate;
+        private List<String> address;
 
         public Builder userEmail(String userEmail) {
             this.userEmail = userEmail;
