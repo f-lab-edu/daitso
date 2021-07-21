@@ -113,7 +113,7 @@ public class UserController {
      * 로그인된 상태에서 새 주소 추가
      *  @param addressDto 새 주소가 들어있는 HashMap<String>
      */
-    @PostMapping("/mypage/addaddress")
+    @PostMapping("/mypage/address")
     public void addAddress(@RequestBody Address addressDto, HttpServletRequest request, HttpServletResponse response) throws IOException {
 
         HttpSession session = request.getSession(false);
