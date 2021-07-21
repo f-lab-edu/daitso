@@ -21,9 +21,5 @@ public interface UserMapper {
 
     void changePassword(EmailPassword emailPassword);
 
-    void savePaymentOption(@Param("userEmail") String userEmail, @Param("paymentoption") int option);
-
-    List<Integer> findPaymentOption(String userEmail);
-
     User findById(int userId);
 }

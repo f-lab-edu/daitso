@@ -12,7 +12,7 @@ import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
 
 @RestController
-@RequestMapping("/users")
+@RequestMapping("/api/users")
 public class UserLoginController {
 
     private final UserService userService;
@@ -26,11 +26,11 @@ public class UserLoginController {
         User user = userService.login(userLoginRequest);
         HttpSession session = httpServletRequest.getSession();
         // 유저 식별자로 사용하기 위한 유저 id(pk) 를 세션에 저장
-        session.setAttribute("USER_ID", user.getId());
+        session.setAttribute("USER_ID", user.getUserId());
         return user;
     }
 
-    @GetMapping("logout")
+    @GetMapping("/logout")
     public void logout(HttpServletRequest request){
         // 쿠키에 있는 세션 아이디에 해당되는 세션이 없는 경우 새로 생성하지 않고 null 값 받음
         HttpSession session = request.getSession(false);

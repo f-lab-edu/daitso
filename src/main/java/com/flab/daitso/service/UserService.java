@@ -1,9 +1,7 @@
 package com.flab.daitso.service;
 
 
-import com.flab.daitso.dto.user.User;
-import com.flab.daitso.dto.user.UserLoginRequest;
-import com.flab.daitso.dto.user.UserRegister;
+import com.flab.daitso.dto.user.*;
 import com.flab.daitso.error.exception.user.ExistingIdException;
 import com.flab.daitso.error.exception.user.NotExistingIdException;
 import com.flab.daitso.error.exception.user.WrongPasswordException;
@@ -94,10 +92,6 @@ public class UserService {
     public void addAddress(Address addressDto, int userId) {
         // 주소 정보가 담긴 addressDto 와 고유한 유저 식별자 userId 를 넘겨 db 에 새 주소 추가
         userMapper.saveAddress(userId, addressDto);
-    }
-
-    public List<Integer> findPaymentOption(String userEmail) {
-        return userMapper.findPaymentOption(userEmail);
     }
 
     public User findById(int userId) {
