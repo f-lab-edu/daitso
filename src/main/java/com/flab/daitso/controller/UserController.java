@@ -1,11 +1,11 @@
 package com.flab.daitso.controller;
 
 import com.flab.daitso.dto.user.*;
-import com.flab.daitso.error.exception.UserNotLoginException;
-import com.flab.daitso.error.exception.WrongPasswordException;
+
+import com.flab.daitso.error.exception.user.UserNotLoginException;
+import com.flab.daitso.error.exception.user.WrongPasswordException;
 import com.flab.daitso.service.UserService;
 import com.flab.daitso.utils.SHA256Util;
-import org.apache.ibatis.javassist.NotFoundException;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
@@ -18,7 +18,7 @@ import java.util.List;
 
 
 @RestController
-@RequestMapping("/users")
+@RequestMapping("/api/users")
 public class UserController {
 
     private final UserService userService;
@@ -96,7 +96,7 @@ public class UserController {
     /**
      * 로그인된 상태에서 주소 목록 검색
      */
-    @GetMapping("mypage/address")
+    @GetMapping("/mypage/address")
     public List<Address> findAddress(HttpServletRequest request){
 
         HttpSession session = request.getSession(false);
@@ -113,7 +113,7 @@ public class UserController {
      * 로그인된 상태에서 새 주소 추가
      *  @param addressDto 새 주소가 들어있는 HashMap<String>
      */
-    @PostMapping("mypage/addaddress")
+    @PostMapping("/mypage/addaddress")
     public void addAddress(@RequestBody Address addressDto, HttpServletRequest request, HttpServletResponse response) throws IOException {
 
         HttpSession session = request.getSession(false);
@@ -126,6 +126,6 @@ public class UserController {
         // 새 주소 등록
         userService.addAddress(addressDto, userId);
         // 새 주소 등록후 주소 목록 검색하기 위해 리다이렉트
-        response.sendRedirect("/users/mypage/address");
+        response.sendRedirect("/api/users/mypage/address");
     }
 }

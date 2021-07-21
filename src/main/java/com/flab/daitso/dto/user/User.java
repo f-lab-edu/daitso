@@ -24,8 +24,8 @@ public class User {
 
     }
 
-    public Long getId() {
-        return id;
+    public Long getUserId() {
+        return userId;
     }
 
     public String getUserEmail() {
@@ -98,5 +98,6 @@ public class User {
         public User build() {
             return new User(1L, userEmail, userPassword, name, phoneNumber, role, registrationDate);
         }
+
     }
 }
