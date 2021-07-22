@@ -1,5 +1,6 @@
 package com.flab.daitso.mapper;
 
+import com.flab.daitso.dto.inqury.InquiryRequest;
 import com.flab.daitso.dto.user.*;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
@@ -22,4 +23,8 @@ public interface UserMapper {
     void changePassword(EmailPassword emailPassword);
 
     User findById(int userId);
+
+    void addInquiry(@Param("userId") int userId, @Param("inquiryRequestDto") InquiryRequest inquiryRequestDto);
+
+    List<InquiryRequest> findInquiryById(int userId);
 }

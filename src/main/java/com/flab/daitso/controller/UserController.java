@@ -1,5 +1,6 @@
 package com.flab.daitso.controller;
 
+import com.flab.daitso.dto.inqury.InquiryRequest;
 import com.flab.daitso.dto.user.*;
 
 import com.flab.daitso.error.exception.user.UserNotLoginException;
@@ -127,5 +128,43 @@ public class UserController {
         userService.addAddress(addressDto, userId);
         // 새 주소 등록후 주소 목록 검색하기 위해 리다이렉트
         response.sendRedirect("/api/users/mypage/address");
+    }
+
+    /**
+     * 로그인된 상태에서 상품 문의 목록 찾기
+     */
+    @GetMapping("/myactivity/inquiry")
+    public List<InquiryRequest> findinquiry(HttpServletRequest request){
+
+        HttpSession session = request.getSession(false);
+        // 로그인 상태가 아니면 예외 발생
+        if (session == null){
+            throw new UserNotLoginException();
+        }
+
+        int userId = Integer.parseInt(session.getAttribute("USER_ID").toString());
+
+        return userService.findInquiryById(userId);
+    }
+
+    /**
+     * 로그인된 상태에서 상품 문의하기
+     *  @param inquiryRequestDto 문의유형, 상품아이디, 문의내용 이 들어있는 Inquiry 객체
+     */
+    @PostMapping("/myactivity/inquiry")
+    public void inquiry(@RequestBody InquiryRequest inquiryRequestDto, HttpServletRequest request, HttpServletResponse response) throws IOException {
+
+        HttpSession session = request.getSession(false);
+        // 로그인 상태가 아니면 예외 발생
+        if (session == null){
+            throw new UserNotLoginException();
+        }
+
+        int userId = Integer.parseInt(session.getAttribute("USER_ID").toString());
+        // 유저 아이디로 새 문의 등록
+        userService.addInquiry(userId, inquiryRequestDto);
+        // 새 문의 등록후 모든 문의목록 출력 리다이렉트
+        response.sendRedirect("/api/users/myactivity/inquiry");
+
     }
 }

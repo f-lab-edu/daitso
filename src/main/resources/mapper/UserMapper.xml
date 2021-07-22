@@ -40,4 +40,14 @@
     <select id="findById" parameterType="int" resultType="com.flab.daitso.dto.user.User">
         select * from user where user_id = #{userId}
     </select>
+
+    <insert id="addInquiry">
+        insert into inquiry(inquiry_type, product_id, user_id, content)
+        values (#{inquiryRequestDto.inquiryType}, #{inquiryRequestDto.productId}, #{userId}, #{inquiryRequestDto.content})
+    </insert>
+
+    <select id="findInquiryById" resultType="com.flab.daitso.dto.inqury.InquiryResponse">
+        select inquiry_type, product_id, content
+        from inquiry order by inquiry_id desc
+    </select>
 </mapper>

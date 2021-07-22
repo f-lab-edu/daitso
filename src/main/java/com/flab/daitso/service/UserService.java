@@ -1,6 +1,7 @@
 package com.flab.daitso.service;
 
 
+import com.flab.daitso.dto.inqury.InquiryRequest;
 import com.flab.daitso.dto.user.*;
 import com.flab.daitso.error.exception.user.ExistingIdException;
 import com.flab.daitso.error.exception.user.NotExistingIdException;
@@ -96,5 +97,13 @@ public class UserService {
 
     public User findById(int userId) {
         return userMapper.findById(userId);
+    }
+
+    public void addInquiry(int userId, InquiryRequest inquiryRequestDto) {
+        userMapper.addInquiry(userId, inquiryRequestDto);
+    }
+
+    public List<InquiryRequest> findInquiryById(int userId) {
+        return userMapper.findInquiryById(userId);
     }
 }

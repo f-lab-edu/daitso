@@ -1,5 +1,7 @@
 package com.flab.daitso.service;
 
+import com.flab.daitso.dto.inqury.InquiryRequest;
+import com.flab.daitso.dto.inqury.InquiryType;
 import com.flab.daitso.dto.user.User;
 import com.flab.daitso.dto.user.UserLoginRequest;
 import com.flab.daitso.dto.user.UserRegister;
@@ -18,7 +20,7 @@ import org.springframework.transaction.annotation.Transactional;
 import static org.assertj.core.api.Assertions.*;
 import static org.junit.jupiter.api.Assertions.*;
 
-/*@ExtendWith(SpringExtension.class)
+@ExtendWith(SpringExtension.class)
 @SpringBootTest
 @Transactional
 class UserServiceTest {
@@ -91,4 +93,10 @@ class UserServiceTest {
 
         assertThrows(WrongPasswordException.class, () -> userService.login(loginRequest));
     }
-}*/
+
+    @Test
+    @DisplayName("상품문의 등록 테스트")
+    public void 문의_등록_테스트(){
+
+    }
+}
