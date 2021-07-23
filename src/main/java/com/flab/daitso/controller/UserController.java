@@ -6,6 +6,8 @@ import com.flab.daitso.error.exception.user.UserNotLoginException;
 import com.flab.daitso.error.exception.user.WrongPasswordException;
 import com.flab.daitso.service.UserService;
 import com.flab.daitso.utils.SHA256Util;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
@@ -28,8 +30,10 @@ public class UserController {
     }
 
     @PostMapping("/signup")
-    public void signup(@RequestBody @Valid UserRegister userRegister) {
+    public ResponseEntity<Void> signup(@RequestBody @Valid UserRegister userRegister) {
         userService.signup(userRegister);
+
+        return new ResponseEntity<>(HttpStatus.OK);
     }
 
     /**
@@ -46,13 +50,13 @@ public class UserController {
         }
         // 세션에 저장된 유저 아이디를 가져와 아이디로 해당 유저 검색
         int userId = Integer.parseInt(session.getAttribute("USER_ID").toString());
-        User user = userService.findById(userId);
+        User user = userService.findByUserId(userId);
         // 마이정보를 보기위해 다시 한번 비밀번호로 본인 인증
         if (!user.getUserPassword().equals(SHA256Util.getSHA256(password.get("userPassword")))){
             throw new WrongPasswordException();
         }
         // 해당 회원이 등록한 주소를 이메일을 이용해 모두 검색해 가져온다
-        List<Address> address = userService.findAddressById(userId);
+        List<Address> address = userService.findAddressByUserId(userId);
 
         // Myinfo 객체에 개인 정보를 담아 리턴
         return new Myinfo(user.getUserEmail(), user.getName(), user.getPhoneNumber(), address);
@@ -82,7 +86,7 @@ public class UserController {
         }
 
         int userId = Integer.parseInt(session.getAttribute("USER_ID").toString());
-        User user = userService.findById(userId);
+        User user = userService.findByUserId(userId);
 
         // 비밀번호 변경을 위해 다시 한번 비밀번호로 본인 인증
         if (!user.getUserPassword().equals(SHA256Util.getSHA256(passwords.get("userPassword")))){
@@ -106,7 +110,7 @@ public class UserController {
         }
 
         int userId = Integer.parseInt(session.getAttribute("USER_ID").toString());
-        return userService.findAddressById(userId);
+        return userService.findAddressByUserId(userId);
     }
 
     /**
