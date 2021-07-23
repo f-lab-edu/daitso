@@ -4,7 +4,6 @@ import org.hibernate.validator.constraints.Length;
 
 import javax.validation.constraints.*;
 import java.time.LocalDateTime;
-import java.util.List;
 
 public class UserRegister {
 
@@ -20,6 +19,11 @@ public class UserRegister {
             message = "비밀번호는 숫자,특수문자,영문 대/소문자가 모두 포함된 8~15자리로 입력하세요.")
     private String userPassword;
 
+    @NotBlank(message = "확인을 위해 비밀번호를 입력하세요.")
+    @Pattern(regexp = "^(?=.*[0-9])(?=.*[a-zA-Z])(?=.*[`~!@#$%^&*+=(),._?\":{}|<>/-])(?=\\S+$).{8,15}$",
+            message = "비밀번호는 숫자,특수문자,영문 대/소문자가 모두 포함된 8~15자리로 입력하세요.")
+    private String confirmUserPassword;
+
     @NotBlank(message = "이름을 입력하세요.")
     @Length(max = 10, message = "이름은 10자 이내로 입력하세요.")
     private String name;
@@ -33,9 +37,10 @@ public class UserRegister {
 
     private final LocalDateTime registrationDate = LocalDateTime.now();
 
-    public UserRegister(String userEmail, String userPassword, String name, String phoneNumber) {
+    public UserRegister(String userEmail, String userPassword, String confirmUserPassword, String name, String phoneNumber) {
         this.userEmail = userEmail;
         this.userPassword = userPassword;
+        this.confirmUserPassword = confirmUserPassword;
         this.name = name;
         this.phoneNumber = phoneNumber;
     }
@@ -46,6 +51,10 @@ public class UserRegister {
 
     public String getUserPassword() {
         return userPassword;
+    }
+
+    public String getConfirmUserPassword() {
+        return confirmUserPassword;
     }
 
     public String getName() {
