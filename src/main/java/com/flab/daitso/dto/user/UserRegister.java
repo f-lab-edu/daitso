@@ -64,15 +64,4 @@ public class UserRegister {
         return registrationDate;
     }
 
-    @Override
-    public String toString() {
-        return "UserRegister{" +
-                "userEmail='" + userEmail + '\'' +
-                ", userPassword='" + userPassword + '\'' +
-                ", name='" + name + '\'' +
-                ", phoneNumber='" + phoneNumber + '\'' +
-                ", role=" + role +
-                ", registrationDate=" + registrationDate +
-                '}';
-    }
 }

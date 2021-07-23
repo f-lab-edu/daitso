@@ -27,11 +27,4 @@ public class EmailPassword {
         return userPassword;
     }
 
-    @Override
-    public String toString() {
-        return "EmailPassword{" +
-                "userId=" + userId +
-                ", userPassword='" + userPassword + '\'' +
-                '}';
-    }
 }

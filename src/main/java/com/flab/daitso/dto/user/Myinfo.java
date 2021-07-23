@@ -32,13 +32,4 @@ public class Myinfo {
         return userAddress;
     }
 
-    @Override
-    public String toString() {
-        return "Myinfo{" +
-                "userEmail='" + userEmail + '\'' +
-                ", userName='" + userName + '\'' +
-                ", phoneNumber='" + phoneNumber + '\'' +
-                ", userAddress=" + userAddress +
-                '}';
-    }
 }
