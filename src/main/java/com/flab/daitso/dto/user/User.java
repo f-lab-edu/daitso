@@ -51,7 +51,6 @@ public class User {
         return registrationDate;
     }
 
-
     /**
      * Builder 패턴 구현
      */
