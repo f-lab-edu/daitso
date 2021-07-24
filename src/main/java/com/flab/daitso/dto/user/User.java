@@ -14,14 +14,13 @@ public class User {
     private LocalDateTime registrationDate;
 
     public User(Long userId, String userEmail, String userPassword, String name, String phoneNumber, Role role, LocalDateTime registrationDate) {
-        this.userId = 1L;
+        this.userId = userId;
         this.userEmail = userEmail;
         this.userPassword = userPassword;
         this.name = name;
         this.phoneNumber = phoneNumber;
         this.role = role;
         this.registrationDate = registrationDate;
-
     }
 
     public Long getUserId() {
@@ -51,7 +50,6 @@ public class User {
     public LocalDateTime getRegistrationDate() {
         return registrationDate;
     }
-
 
     /**
      * Builder 패턴 구현
@@ -98,6 +96,5 @@ public class User {
         public User build() {
             return new User(1L, userEmail, userPassword, name, phoneNumber, role, registrationDate);
         }
-
     }
 }

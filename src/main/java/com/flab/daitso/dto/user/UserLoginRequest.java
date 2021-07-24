@@ -32,11 +32,4 @@ public class UserLoginRequest {
         this.userPassword = userPassword;
     }
 
-    @Override
-    public String toString() {
-        return "UserLoginRequest{" +
-                "userEmail='" + userEmail + '\'' +
-                ", userPassword='" + userPassword + '\'' +
-                '}';
-    }
 }

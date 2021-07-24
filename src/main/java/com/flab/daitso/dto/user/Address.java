@@ -42,15 +42,4 @@ public class Address {
         return userId;
     }
 
-    @Override
-    public String toString() {
-        return "Address{" +
-                "zipcode='" + zipcode + '\'' +
-                ", si='" + si + '\'' +
-                ", gu='" + gu + '\'' +
-                ", dong='" + dong + '\'' +
-                ", address='" + address + '\'' +
-                ", userId=" + userId +
-                '}';
-    }
 }

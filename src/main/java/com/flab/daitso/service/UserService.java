@@ -2,6 +2,7 @@ package com.flab.daitso.service;
 
 
 import com.flab.daitso.dto.user.*;
+import com.flab.daitso.error.exception.user.DifferentPasswordException;
 import com.flab.daitso.error.exception.user.ExistingIdException;
 import com.flab.daitso.error.exception.user.NotExistingIdException;
 import com.flab.daitso.error.exception.user.WrongPasswordException;
@@ -9,9 +10,7 @@ import com.flab.daitso.error.exception.user.WrongPasswordException;
 import com.flab.daitso.mapper.UserMapper;
 import com.flab.daitso.utils.SHA256Util;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
-import javax.validation.Valid;
 import java.util.List;
 
 @Service
@@ -23,9 +22,12 @@ public class UserService {
         this.userMapper = userMapper;
     }
 
-    public String signup(@Valid UserRegister userRegister) {
+    public String signup(UserRegister userRegister) {
         validateDuplicateUser(userRegister);
         String encryptedPassword = SHA256Util.getSHA256(userRegister.getUserPassword());
+        String encryptedConfirmPassword = SHA256Util.getSHA256(userRegister.getConfirmUserPassword());
+
+        comparePassword(encryptedPassword, encryptedConfirmPassword);
 
         User user = new User.Builder()
                 .userEmail(userRegister.getUserEmail())
@@ -49,7 +51,13 @@ public class UserService {
         }
     }
 
-    public User login(@Valid UserLoginRequest userLoginRequest) {
+    private void comparePassword(String password, String confirmPassword) {
+        if (!password.equals(confirmPassword)) {
+            throw new DifferentPasswordException();
+        }
+    }
+
+    public User login(UserLoginRequest userLoginRequest) {
         return checkUser(userLoginRequest);
     }
 
@@ -61,7 +69,6 @@ public class UserService {
     }
 
     private User checkUser(UserLoginRequest userLoginRequest) {
-
         checkExistingEmail(userLoginRequest.getUserEmail());
         String encryptedPassword = SHA256Util.getSHA256(userLoginRequest.getUserPassword());
         userLoginRequest.setUserPassword(encryptedPassword);
@@ -73,14 +80,6 @@ public class UserService {
         return byUserEmailAndUserPassword;
     }
 
-    public User findByEmail(String email) {
-        return userMapper.findByUserEmail(email);
-    }
-
-    public List<Address> findAddressById(int userId) {
-        return userMapper.findAddressById(userId);
-    }
-
     public void changePassword(EmailPassword emailPassword) {
         // 객체 내 비밀번호 암호화
         emailPassword.setUserPassword(SHA256Util.getSHA256(emailPassword.getUserPassword()));
@@ -88,13 +87,20 @@ public class UserService {
         userMapper.changePassword(emailPassword);
     }
 
-    @Transactional
     public void addAddress(Address addressDto, int userId) {
         // 주소 정보가 담긴 addressDto 와 고유한 유저 식별자 userId 를 넘겨 db 에 새 주소 추가
         userMapper.saveAddress(userId, addressDto);
     }
 
-    public User findById(int userId) {
+    public User findByUserId(int userId) {
         return userMapper.findById(userId);
+    }
+
+    public List<Address> findAddressByUserId(int userId) {
+        return userMapper.findAddressById(userId);
+    }
+
+    public User findByUserEmail(String userEmail) {
+        return userMapper.findByUserEmail(userEmail);
     }
 }
