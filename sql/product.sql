@@ -13,3 +13,8 @@ create table product(
     deleted char(1) default 'N',
     PRIMARY KEY (product_id)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+/**
+  상품명 fulltext index 적용
+ */
+CREATE FULLTEXT INDEX idx_name ON product(name);
