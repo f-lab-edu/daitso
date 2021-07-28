@@ -1,9 +1,8 @@
 package com.flab.daitso.service;
 
 import com.flab.daitso.dto.product.Category;
-import com.flab.daitso.dto.product.ProductDto;
+import com.flab.daitso.dto.product.Product;
 import com.flab.daitso.error.exception.category.NotFoundCategoryException;
-import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -22,6 +21,9 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 @SpringBootTest
 @Transactional
 class CategoryServiceTest {
+
+    private final static int PAGE = 1;
+    private final static int LISTSIZE = 60;
 
     @Autowired
     private CategoryService categoryService;
@@ -63,7 +65,7 @@ class CategoryServiceTest {
     @Test
     @DisplayName("카테고리 안에 존재하는 상품 리스트 반환")
     public void 카테고리_안_상품_리스트_반환() {
-        List<ProductDto> products = new ArrayList<>();
+        List<Product> products = new ArrayList<>();
 
         Category carGoods = new Category("car goods");
         Category interior = new Category("interior");
@@ -73,23 +75,23 @@ class CategoryServiceTest {
         categoryService.saveCategory(carGoods);
         Long interiorId = categoryService.saveCategory(interior);
 
-        ProductDto productDto1 = new ProductDto.Builder()
+        Product product1 = new Product.Builder()
                 .name("test1")
                 .price(10000L)
                 .content("test1 상품입니다.")
                 .build();
 
-        ProductDto productDto2 = new ProductDto.Builder()
+        Product product2 = new Product.Builder()
                 .name("test2")
                 .price(20000L)
                 .content("test2 상품입니다.")
                 .build();
 
-        productService.registerProduct(productDto1);
-        productService.registerProduct(productDto2);
+        productService.registerProduct(product1);
+        productService.registerProduct(product2);
 
-        products.add(productDto1);
-        products.add(productDto2);
+        products.add(product1);
+        products.add(product2);
 
         Category category = productService.saveProductInCategory(interiorId, products);
 
@@ -99,7 +101,7 @@ class CategoryServiceTest {
     @Test
     @DisplayName("카테고리 id로 상품 목록 반환")
     public void categoryID로_상품_목록_반환() {
-        List<ProductDto> products = new ArrayList<>();
+        List<Product> products = new ArrayList<>();
 
         Category carGoods = new Category("car goods");
         Category interior = new Category("interior");
@@ -109,34 +111,34 @@ class CategoryServiceTest {
         Long carGoodsId = categoryService.saveCategory(carGoods);
         Long interiorId = categoryService.saveCategory(interior);
 
-        ProductDto productDto1 = new ProductDto.Builder()
+        Product product1 = new Product.Builder()
                 .name("test1")
                 .price(10000L)
                 .content("test1 상품입니다.")
                 .build();
 
-        ProductDto productDto2 = new ProductDto.Builder()
+        Product product2 = new Product.Builder()
                 .name("test2")
                 .price(20000L)
                 .content("test2 상품입니다.")
                 .build();
 
-        productService.registerProduct(productDto1);
-        productService.registerProduct(productDto2);
+        productService.registerProduct(product1);
+        productService.registerProduct(product2);
 
-        products.add(productDto1);
-        products.add(productDto2);
+        products.add(product1);
+        products.add(product2);
 
         productService.saveProductInCategory(interiorId, products);
 
-        assertThat(categoryService.findProductListByCategoryId(interiorId).get(0).getName()).isEqualTo(productDto1.getName());
-        assertThat(categoryService.findProductListByCategoryId(interiorId).get(1).getName()).isEqualTo(productDto2.getName());
+        assertThat(productService.findProductListByCategoryId(interiorId, PAGE, LISTSIZE).get(0).getName()).isEqualTo(product1.getName());
+        assertThat(productService.findProductListByCategoryId(interiorId, PAGE, LISTSIZE).get(1).getName()).isEqualTo(product2.getName());
     }
 
     @Test
     @DisplayName("카테고리 삭제")
     public void 카테고리_삭제() {
-        List<ProductDto> products = new ArrayList<>();
+        List<Product> products = new ArrayList<>();
 
         Category carGoods = new Category("car goods");
         Category interior = new Category("interior");
@@ -146,23 +148,23 @@ class CategoryServiceTest {
         Long carGoodsId = categoryService.saveCategory(carGoods);
         Long interiorId = categoryService.saveCategory(interior);
 
-        ProductDto productDto1 = new ProductDto.Builder()
+        Product product1 = new Product.Builder()
                 .name("test1")
                 .price(10000L)
                 .content("test1 상품입니다.")
                 .build();
 
-        ProductDto productDto2 = new ProductDto.Builder()
+        Product product2 = new Product.Builder()
                 .name("test2")
                 .price(20000L)
                 .content("test2 상품입니다.")
                 .build();
 
-        productService.registerProduct(productDto1);
-        productService.registerProduct(productDto2);
+        productService.registerProduct(product1);
+        productService.registerProduct(product2);
 
-        products.add(productDto1);
-        products.add(productDto2);
+        products.add(product1);
+        products.add(product2);
 
         productService.saveProductInCategory(interiorId, products);
 

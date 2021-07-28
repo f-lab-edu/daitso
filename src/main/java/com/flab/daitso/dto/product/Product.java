@@ -8,7 +8,7 @@ import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import java.time.LocalDateTime;
 
-public class ProductDto {
+public class Product {
 
     private Long productId;
 
@@ -36,11 +36,11 @@ public class ProductDto {
 
     private DeliveryChargeType deliveryChargeType;
 
-    public ProductDto() {
+    public Product() {
     }
 
-    public ProductDto(Long productId, String name, Long price, String content, LocalDateTime createdAt,
-                      LocalDateTime updatedAt, Long quantity, Long score, String mainImage, String detailImage, DeliveryChargeType deliveryChargeType) {
+    public Product(Long productId, String name, Long price, String content, LocalDateTime createdAt,
+                   LocalDateTime updatedAt, Long quantity, Long score, String mainImage, String detailImage, DeliveryChargeType deliveryChargeType) {
         this.productId = 1L;
         this.name = name;
         this.price = price;
@@ -189,8 +189,8 @@ public class ProductDto {
             return this;
         }
 
-        public ProductDto build() {
-            return new ProductDto(1L, name, price, content, createAt, updateAt, quantity, score, mainImage, detailImage, deliveryChargeType);
+        public Product build() {
+            return new Product(1L, name, price, content, createAt, updateAt, quantity, score, mainImage, detailImage, deliveryChargeType);
         }
     }
 }
