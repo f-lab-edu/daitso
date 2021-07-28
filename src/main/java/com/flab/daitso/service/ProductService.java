@@ -106,7 +106,7 @@ public class ProductService {
     }
 
     /**
-     * 별점 - 1 ~ 별점로 상품 리스트 조회하기
+     * 별점 - 1 ~ 별점 범위로 상품 리스트 조회하기
      */
     public List<Product> findProductListByScoreRange(Long categoryId, int page, int listSize, Long score) {
         if (score == 0) {
@@ -116,23 +116,63 @@ public class ProductService {
     }
 
     /**
-     * 가격으로 상품 리스트 조회하기
+     * 가격 범위로 상품 리스트 조회하기
      */
     public List<Product> findProductListByPriceRange(Long categoryId, int page, int listSize, Long minPrice, Long maxPrice) {
         return productMapper.findProductListByPriceRange(categoryId, listSize * (page - 1), listSize, minPrice, maxPrice);
     }
 
+    public List<Product> findProductListByDeliveryChargeType(Long categoryId, int page, int listSize, DeliveryChargeType deliveryChargeType) {
+        return productMapper.findProductListByDeliveryChargeType(categoryId, listSize * (page - 1), listSize, deliveryChargeType);
+    }
+
     /**
      * 최신순으로 상품 리스트 조회하기
      * sorter
-     * 0 --> 최신순
-     * 1 -->
+     * latestOrder --> 최신순
+     * lowPriceOrder --> 낮은가격순
+     * highPriceOrder --> 높은가격순
+     * scoreOrder --> 별점순
      */
-    public List<Product> findProductListByLatestOrder(Long categoryId, int page, int listSize, Long sorter) {
-        return productMapper.findProductListByLatestOrder(categoryId, listSize * (page - 1), listSize);
+    public List<Product> findProductListBySort(Long categoryId, int page, int listSize, String sorter) {
+        int convertedPage = listSize * (page - 1);
+
+        if (sorter.equals("lowPriceOrder")) {
+            return productMapper.findProductListByLowPriceOrder(categoryId, convertedPage, listSize);
+        } else if (sorter.equals("highPriceOrder")) {
+            return productMapper.findProductListByHighPriceOrder(categoryId, convertedPage, listSize);
+        } else if (sorter.equals("scoreOrder")) {
+            return productMapper.findProductListByScoreOrder(categoryId, convertedPage, listSize);
+        } else {
+            return productMapper.findProductListByLatestOrder(categoryId, convertedPage, listSize);
+        }
     }
 
-    public List<Product> findProductListByDeliveryChargeType(Long categoryId, int page, int listSize, DeliveryChargeType deliveryChargeType) {
-        return productMapper.findProductListByDeliveryChargeType(categoryId, listSize * (page - 1), listSize, deliveryChargeType);
+    /**
+     * 낮은 가격순으로 상품 목록 조회하기
+     */
+    private List<Product> findProductListByLowPriceOrder(Long categoryId, int page, int listSize) {
+        return productMapper.findProductListByLowPriceOrder(categoryId, page, listSize);
+    }
+
+    /**
+     * 높은 가격순으로 상품 목록 조회하기
+     */
+    private List<Product> findProductListByHighPriceOrder(Long categoryId, int page, int listSize) {
+        return productMapper.findProductListByHighPriceOrder(categoryId, page, listSize);
+    }
+
+    /**
+     * 별점순으로 상품 목록 조회하기
+     */
+    private List<Product> findProductListByScoreOrder(Long categoryId, int page, int listSize) {
+        return productMapper.findProductListByScoreOrder(categoryId, page, listSize);
+    }
+
+    /**
+     * 최신순으로 상품 목록 조회하기
+     */
+    private List<Product> findProductListByLatestOrder(Long categoryId, int page, int listSize) {
+        return productMapper.findProductListByLatestOrder(categoryId, listSize * (page - 1), listSize);
     }
 }

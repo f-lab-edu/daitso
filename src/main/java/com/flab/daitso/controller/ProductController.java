@@ -58,15 +58,15 @@ public class ProductController {
                                               @RequestParam(required = false, defaultValue = "0") Long score,
                                               @RequestParam(required = false, defaultValue = "0") Long minPrice,
                                               @RequestParam(required = false, defaultValue = "0") Long maxPrice,
-                                              @RequestParam(required = false, defaultValue = "0") Long sorter) {
+                                              @RequestParam(required = false, defaultValue = "latestOrder") String sorter) {
         if (score > 0) {
             return getProductListByScoreRange(categoryId, page, listSize, score);
         }
         if (minPrice > 0 && (minPrice <= maxPrice)) {
             return getProductListByPriceRange(categoryId, page, listSize, minPrice, maxPrice);
         }
-        if (sorter >= 0) {
-            return getProductListByLatestOrder(categoryId, page, listSize, sorter);
+        if (!sorter.isEmpty()) {
+            return getProductListBySort(categoryId, page, listSize, sorter);
         }
         return productService.findProductListByScoreRange(categoryId, page, listSize,0L);
     }
@@ -79,7 +79,7 @@ public class ProductController {
         return productService.findProductListByPriceRange(categoryId, page, listSize, minPrice, maxPrice);
     }
 
-    private List<Product> getProductListByLatestOrder(Long categoryId, int page, int listSize, Long sorter) {
-        return productService.findProductListByLatestOrder(categoryId, page, listSize, sorter);
+    private List<Product> getProductListBySort(Long categoryId, int page, int listSize, String sorter) {
+        return productService.findProductListBySort(categoryId, page, listSize, sorter);
     }
 }

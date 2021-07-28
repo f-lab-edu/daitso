@@ -29,7 +29,7 @@ public interface ProductMapper {
     List<Product> findProductListByCategoryId(@Param("categoryId") Long productId, @Param("page") int page, @Param("listSize") int listSize);
 
     /**
-     * 별점순으로 상품 목록 조회
+     * 별점 범위로 상품 목록 조회
      */
     List<Product> findProductListByScoreRange(@Param("categoryId") Long categoryId, @Param("page") int page, @Param("listSize") int listSize, @Param("score") Long score);
 
@@ -37,6 +37,21 @@ public interface ProductMapper {
      * 가격 범위로 상품 목록 조회
      */
     List<Product> findProductListByPriceRange(@Param("categoryId") Long categoryId, @Param("page") int page, @Param("listSize") int listSize, @Param("minPrice") Long minPrice, @Param("maxPrice") Long maxPrice);
+
+    /**
+     * 낮은 가격순으로 상품 목록 조회
+     */
+    List<Product> findProductListByLowPriceOrder(@Param("categoryId") Long categoryId, @Param("page") int page, @Param("listSize") int listSize);
+
+    /**
+     * 높은 가격순으로 상품 목록 조회
+     */
+    List<Product> findProductListByHighPriceOrder(@Param("categoryId") Long categoryId, @Param("page") int page, @Param("listSize") int listSize);
+
+    /**
+     * 별점순으로 상품 목록 조회
+     */
+    List<Product> findProductListByScoreOrder(@Param("categoryId") Long categoryId, @Param("page") int page, @Param("listSize") int listSize);
 
     /**
      * 최신순으로 상품 목록 조회
@@ -47,6 +62,4 @@ public interface ProductMapper {
      * 배송 타입으로 상품 목록 조회
      */
     List<Product> findProductListByDeliveryChargeType(@Param("categoryId") Long categoryId, @Param("page") int page, @Param("listSize") int listSize, DeliveryChargeType deliveryChargeType);
-
 }
-
