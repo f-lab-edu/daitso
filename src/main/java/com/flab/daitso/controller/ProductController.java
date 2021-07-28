@@ -1,6 +1,6 @@
 package com.flab.daitso.controller;
 
-import com.flab.daitso.dto.product.ProductDto;
+import com.flab.daitso.dto.product.Product;
 import com.flab.daitso.service.ProductService;
 import org.springframework.web.bind.annotation.*;
 
@@ -19,11 +19,11 @@ public class ProductController {
 
     /**
      * 특정 상품을 등록하는 기능
-     * @param productDto 상품 정보
+     * @param product 상품 정보
      */
     @PostMapping
-    public void registerProduct(@RequestBody @Valid ProductDto productDto) {
-        productService.registerProduct(productDto);
+    public void registerProduct(@RequestBody @Valid Product product) {
+        productService.registerProduct(product);
     }
 
     /**
@@ -31,7 +31,7 @@ public class ProductController {
      * @param productId 상품아이디
      */
     @GetMapping("/{productId}")
-    public ProductDto searchById(@PathVariable Long productId) {
+    public Product searchById(@PathVariable Long productId) {
         return productService.findProductById(productId);
     }
 
@@ -52,32 +52,34 @@ public class ProductController {
      */
 
     @GetMapping("/categories/{categoryId}")
-    public List<ProductDto> getProductListBySort(@PathVariable Long categoryId,
-                                                 @RequestParam(value = "score", required = false, defaultValue = "0") Long score,
-                                                 @RequestParam(value = "minPrice", required = false, defaultValue = "0") Long minPrice,
-                                                 @RequestParam(value = "maxPrice", required = false, defaultValue = "0") Long maxPrice,
-                                                 @RequestParam(value = "sorter", required = false, defaultValue = "0") Long sorter) {
+    public List<Product> getProductListBySort(@PathVariable Long categoryId,
+                                              @RequestParam(required = false, defaultValue = "1") int page,
+                                              @RequestParam(required = false, defaultValue = "60") int listSize,
+                                              @RequestParam(required = false, defaultValue = "0") Long score,
+                                              @RequestParam(required = false, defaultValue = "0") Long minPrice,
+                                              @RequestParam(required = false, defaultValue = "0") Long maxPrice,
+                                              @RequestParam(required = false, defaultValue = "0") Long sorter) {
         if (score > 0) {
-            return getProductListByScoreRange(categoryId, score);
+            return getProductListByScoreRange(categoryId, page, listSize, score);
         }
         if (minPrice > 0 && (minPrice <= maxPrice)) {
-            return getProductListByPriceRange(categoryId, minPrice, maxPrice);
+            return getProductListByPriceRange(categoryId, page, listSize, minPrice, maxPrice);
         }
         if (sorter >= 0) {
-            return getProductListByLatestOrder(categoryId, sorter);
+            return getProductListByLatestOrder(categoryId, page, listSize, sorter);
         }
-        return productService.findProductListByScoreRange(categoryId, 0L);
+        return productService.findProductListByScoreRange(categoryId, page, listSize,0L);
     }
 
-    private List<ProductDto> getProductListByScoreRange(Long categoryId, Long score) {
-        return productService.findProductListByScoreRange(categoryId, score);
+    private List<Product> getProductListByScoreRange(Long categoryId, int page, int listSize, Long score) {
+        return productService.findProductListByScoreRange(categoryId, page, listSize,0L);
     }
 
-    private List<ProductDto> getProductListByPriceRange(Long categoryId, Long minPrice, Long maxPrice) {
-        return productService.findProductListByPriceRange(categoryId, minPrice, maxPrice);
+    private List<Product> getProductListByPriceRange(Long categoryId, int page, int listSize, Long minPrice, Long maxPrice) {
+        return productService.findProductListByPriceRange(categoryId, page, listSize, minPrice, maxPrice);
     }
 
-    private List<ProductDto> getProductListByLatestOrder(Long categoryId, Long sorter) {
-        return productService.findProductListByLatestOrder(categoryId, sorter);
+    private List<Product> getProductListByLatestOrder(Long categoryId, int page, int listSize, Long sorter) {
+        return productService.findProductListByLatestOrder(categoryId, page, listSize, sorter);
     }
 }
