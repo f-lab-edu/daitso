@@ -256,7 +256,7 @@ class ProductServiceTest {
 
         productService.saveProductInCategory(interiorId, products);
 
-        List<Product> productList = productService.findProductListByLatestOrder(interiorId, PAGE, LISTSIZE, 0L);
+        List<Product> productList = productService.findProductListBySort(interiorId, PAGE, LISTSIZE, "latestOrder");
 
         assertThat(productList.get(0).getProductId()).isEqualTo(product2.getProductId());
         assertThat(productList.get(1).getProductId()).isEqualTo(product1.getProductId());
