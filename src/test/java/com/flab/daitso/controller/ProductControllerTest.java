@@ -122,9 +122,6 @@ public class ProductControllerTest {
     @Test
     @DisplayName("카테고리별 상품 목록 조회 테스트")
     public void 카테고리별_상품_목록_조회_테스트() throws Exception {
-        List<Product> products1 = new ArrayList<>();
-        List<Product> products2 = new ArrayList<>();
-
         Category carGoods = new Category("car goods");
         Category interior = new Category("interior");
         Category seat = new Category("seat");
@@ -158,12 +155,8 @@ public class ProductControllerTest {
         productService.registerProduct(product2);
         productService.registerProduct(product3);
 
-        products1.add(product1);
-        products1.add(product2);
-        products2.add(product3);
-
-        productService.saveProductInCategory(interiorId, products1);
-        productService.saveProductInCategory(seatId, products2);
+        productService.saveProductInCategory(interiorId, product1.getProductId());
+        productService.saveProductInCategory(seatId, product2.getProductId());
 
         mvc.perform(get("/api/products/categories/" + interiorId)
                 .contentType(MediaType.APPLICATION_JSON))
@@ -174,9 +167,6 @@ public class ProductControllerTest {
     @Test
     @DisplayName("별점으로 상품 리스트 반환")
     public void 별점으로_상품_리스트_반환() throws Exception {
-        List<Product> products1 = new ArrayList<>();
-        List<Product> products2 = new ArrayList<>();
-
         Category carGoods = new Category("car goods");
         Category interior = new Category("interior");
         Category seat = new Category("seat");
@@ -210,12 +200,8 @@ public class ProductControllerTest {
         productService.registerProduct(product2);
         productService.registerProduct(product3);
 
-        products1.add(product1);
-        products1.add(product2);
-        products2.add(product3);
-
-        productService.saveProductInCategory(interiorId, products1);
-        productService.saveProductInCategory(seatId, products2);
+        productService.saveProductInCategory(interiorId, product1.getProductId());
+        productService.saveProductInCategory(seatId, product2.getProductId());
 
         mvc.perform(get("/api/products/categories/" + interiorId)
                 .param("score", "0")

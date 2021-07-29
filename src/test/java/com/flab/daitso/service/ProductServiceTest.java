@@ -14,7 +14,6 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.*;
@@ -26,7 +25,7 @@ import static org.junit.jupiter.api.Assertions.*;
 class ProductServiceTest {
 
     private final static int PAGE = 1;
-    private final static int LISTSIZE = 60;
+    private final static int LIST_SIZE = 60;
 
     @Autowired
     ProductMapper productMapper;
@@ -48,6 +47,7 @@ class ProductServiceTest {
 
         Long saveProductId = productService.registerProduct(productDto);
         Product product = productService.findProductById(saveProductId);
+
         assertThat(saveProductId).isEqualTo(product.getProductId());
     }
 
@@ -66,14 +66,13 @@ class ProductServiceTest {
                 .price(10000L)
                 .content("test 상품입니다.")
                 .build();
+
         assertThrows(DuplicateProductNameException.class, () -> productService.registerProduct(product1));
     }
 
     @Test
     @DisplayName("상품에 카테고리 지정")
     public void 상품에_카테고리_지정_테스트() {
-        List<Product> products = new ArrayList<>();
-
         Product product1 = new Product.Builder()
                 .name("test")
                 .price(10000L)
@@ -81,7 +80,6 @@ class ProductServiceTest {
                 .build();
 
         productService.registerProduct(product1);
-        products.add(product1);
 
         Category sportsCategory = new Category("sports");
         categoryService.saveCategory(sportsCategory);
@@ -91,9 +89,9 @@ class ProductServiceTest {
 
         Long categoryId = categoryService.saveCategory(soccerCategory);
 
-        Category category = productService.saveProductInCategory(categoryId, products);
+        productService.saveProductInCategory(categoryId, product1.getProductId());
 
-        assertThat(category.getProducts().get(0).getProductId()).isEqualTo(product1.getProductId());
+        assertThat(productService.findProductListByCategoryId(categoryId, 1, 10).get(0).getProductId()).isEqualTo(product1.getProductId());
     }
 
 
@@ -153,8 +151,6 @@ class ProductServiceTest {
     @Test
     @DisplayName("카테고리 내에 존재하는 상품 삭제")
     public void 카테고리_내_존재하는_상품_삭제() {
-        List<Product> products = new ArrayList<>();
-
         Product product1 = new Product.Builder()
                 .name("test")
                 .price(10000L)
@@ -162,7 +158,6 @@ class ProductServiceTest {
                 .build();
 
         productService.registerProduct(product1);
-        products.add(product1);
 
         Category sportsCategory = new Category("sports");
         categoryService.saveCategory(sportsCategory);
@@ -172,7 +167,7 @@ class ProductServiceTest {
 
         Long categoryId = categoryService.saveCategory(soccerCategory);
 
-        productService.saveProductInCategory(categoryId, products);
+        productService.saveProductInCategory(categoryId, product1.getProductId());
 
         Long productId = product1.getProductId();
         productService.deleteProduct(productId);
@@ -183,8 +178,6 @@ class ProductServiceTest {
     @Test
     @DisplayName("가격으로 상품 리스트 가져오기")
     public void 가격으로_상품_리스트_가져오기() {
-        List<Product> products = new ArrayList<>();
-
         Category carGoods = new Category("car goods");
         Category interior = new Category("interior");
 
@@ -210,12 +203,9 @@ class ProductServiceTest {
         productService.registerProduct(product1);
         productService.registerProduct(product2);
 
-        products.add(product1);
-        products.add(product2);
+        productService.saveProductInCategory(interiorId, product1.getProductId());
 
-        productService.saveProductInCategory(interiorId, products);
-
-        List<Product> productList = productService.findProductListByPriceRange(interiorId, PAGE, LISTSIZE, 10000L, 20000L);
+        List<Product> productList = productService.findProductListByPriceRange(interiorId, PAGE, LIST_SIZE, 10000L, 20000L);
 
         assertThat(productList.size()).isEqualTo(1);
     }
@@ -223,8 +213,6 @@ class ProductServiceTest {
     @Test
     @DisplayName("최신순으로 상품 리스트 가져오기")
     public void 최신순으로_상품_리스트_가져오기() throws InterruptedException {
-        List<Product> products = new ArrayList<>();
-
         Category carGoods = new Category("car goods");
         Category interior = new Category("interior");
 
@@ -251,14 +239,13 @@ class ProductServiceTest {
         Thread.sleep(2000);
         productService.registerProduct(product2);
 
-        products.add(product1);
-        products.add(product2);
+        productService.saveProductInCategory(interiorId, product1.getProductId());
+        productService.saveProductInCategory(interiorId, product2.getProductId());
 
-        productService.saveProductInCategory(interiorId, products);
-
-        List<Product> productList = productService.findProductListBySort(interiorId, PAGE, LISTSIZE, "latestOrder");
+        List<Product> productList = productService.findProductListBySort(interiorId, PAGE, LIST_SIZE, "latestOrder");
 
         assertThat(productList.get(0).getProductId()).isEqualTo(product2.getProductId());
         assertThat(productList.get(1).getProductId()).isEqualTo(product1.getProductId());
     }
 }
+

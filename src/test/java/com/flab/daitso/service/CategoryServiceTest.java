@@ -65,8 +65,6 @@ class CategoryServiceTest {
     @Test
     @DisplayName("카테고리 안에 존재하는 상품 리스트 반환")
     public void 카테고리_안_상품_리스트_반환() {
-        List<Product> products = new ArrayList<>();
-
         Category carGoods = new Category("car goods");
         Category interior = new Category("interior");
 
@@ -90,19 +88,15 @@ class CategoryServiceTest {
         productService.registerProduct(product1);
         productService.registerProduct(product2);
 
-        products.add(product1);
-        products.add(product2);
+       productService.saveProductInCategory(interiorId, product1.getProductId());
+       productService.saveProductInCategory(interiorId, product2.getProductId());
 
-        Category category = productService.saveProductInCategory(interiorId, products);
-
-        assertThat(category.getProducts().size()).isEqualTo(2);
+        assertThat(productService.findProductListByCategoryId(interiorId, 1, 10).size()).isEqualTo(2);
     }
 
     @Test
     @DisplayName("카테고리 id로 상품 목록 반환")
     public void categoryID로_상품_목록_반환() {
-        List<Product> products = new ArrayList<>();
-
         Category carGoods = new Category("car goods");
         Category interior = new Category("interior");
 
@@ -126,10 +120,8 @@ class CategoryServiceTest {
         productService.registerProduct(product1);
         productService.registerProduct(product2);
 
-        products.add(product1);
-        products.add(product2);
-
-        productService.saveProductInCategory(interiorId, products);
+        productService.saveProductInCategory(interiorId, product1.getProductId());
+        productService.saveProductInCategory(interiorId, product2.getProductId());
 
         assertThat(productService.findProductListByCategoryId(interiorId, PAGE, LISTSIZE).get(0).getName()).isEqualTo(product1.getName());
         assertThat(productService.findProductListByCategoryId(interiorId, PAGE, LISTSIZE).get(1).getName()).isEqualTo(product2.getName());
@@ -138,8 +130,6 @@ class CategoryServiceTest {
     @Test
     @DisplayName("카테고리 삭제")
     public void 카테고리_삭제() {
-        List<Product> products = new ArrayList<>();
-
         Category carGoods = new Category("car goods");
         Category interior = new Category("interior");
 
@@ -163,10 +153,7 @@ class CategoryServiceTest {
         productService.registerProduct(product1);
         productService.registerProduct(product2);
 
-        products.add(product1);
-        products.add(product2);
-
-        productService.saveProductInCategory(interiorId, products);
+        productService.saveProductInCategory(interiorId, product1.getProductId());
 
         categoryService.deleteCategory(interiorId);
 
