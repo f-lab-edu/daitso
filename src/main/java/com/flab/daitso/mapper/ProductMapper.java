@@ -19,14 +19,14 @@ public interface ProductMapper {
     void register(Product product);
 
     // 하나의 상품을 상품아이디로 삭제한다.
-    void delete(Long productId);
+    int delete(Long productId);
 
     void saveProductInCategory(@Param("categoryId") Long categoryId, @Param("productId") Long productId);
 
     /**
      * 카테고리 아이디로 상품 목록 조회
      */
-    List<Product> findProductListByCategoryId(@Param("categoryId") Long productId, @Param("page") int page, @Param("listSize") int listSize);
+    List<Product> findProductListByCategoryId(@Param("categoryId") Long categoryId, @Param("page") int page, @Param("listSize") int listSize);
 
     /**
      * 별점 범위로 상품 목록 조회

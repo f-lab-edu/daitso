@@ -1,8 +1,9 @@
 package com.flab.daitso.service;
 
 import com.flab.daitso.dto.delivery.DeliveryChargeType;
-import com.flab.daitso.dto.product.Category;
+import com.flab.daitso.dto.product.ParameterBySort;
 import com.flab.daitso.dto.product.Product;
+import com.flab.daitso.dto.product.SortType;
 import com.flab.daitso.error.exception.product.DuplicateProductNameException;
 import com.flab.daitso.mapper.ProductMapper;
 import com.flab.daitso.error.exception.product.SoldOutException;
@@ -76,26 +77,17 @@ public class ProductService {
      * 상품 삭제하기
      */
     public void deleteProduct(Long productId) {
-        Product findProduct = productMapper.findProductById(productId);
-
-        if (findProduct == null) {
+        int successfulRow = productMapper.delete(productId);
+        if (successfulRow <= 0) {
             throw new NotFoundException();
         }
-        productMapper.delete(productId);
     }
 
     /**
      * 카테고리에 상품 넣기
      */
-    public Category saveProductInCategory(Long categoryId, List<Product> products) {
-        Category findCategory = categoryService.findById(categoryId);
-        for (Product product : products) {
-            Product findProduct = findProductById(product.getProductId());
-            findCategory.addProduct(findProduct);
-            productMapper.saveProductInCategory(categoryId, findProduct.getProductId());
-        }
-
-        return findCategory;
+    public void saveProductInCategory(Long categoryId, Long productId) {
+        productMapper.saveProductInCategory(categoryId, productId);
     }
 
     /**
@@ -136,43 +128,9 @@ public class ProductService {
      */
     public List<Product> findProductListBySort(Long categoryId, int page, int listSize, String sorter) {
         int convertedPage = listSize * (page - 1);
+        ParameterBySort parameterBySort = new ParameterBySort(categoryId, convertedPage, listSize);
 
-        if (sorter.equals("lowPriceOrder")) {
-            return productMapper.findProductListByLowPriceOrder(categoryId, convertedPage, listSize);
-        } else if (sorter.equals("highPriceOrder")) {
-            return productMapper.findProductListByHighPriceOrder(categoryId, convertedPage, listSize);
-        } else if (sorter.equals("scoreOrder")) {
-            return productMapper.findProductListByScoreOrder(categoryId, convertedPage, listSize);
-        } else {
-            return productMapper.findProductListByLatestOrder(categoryId, convertedPage, listSize);
-        }
-    }
-
-    /**
-     * 낮은 가격순으로 상품 목록 조회하기
-     */
-    private List<Product> findProductListByLowPriceOrder(Long categoryId, int page, int listSize) {
-        return productMapper.findProductListByLowPriceOrder(categoryId, page, listSize);
-    }
-
-    /**
-     * 높은 가격순으로 상품 목록 조회하기
-     */
-    private List<Product> findProductListByHighPriceOrder(Long categoryId, int page, int listSize) {
-        return productMapper.findProductListByHighPriceOrder(categoryId, page, listSize);
-    }
-
-    /**
-     * 별점순으로 상품 목록 조회하기
-     */
-    private List<Product> findProductListByScoreOrder(Long categoryId, int page, int listSize) {
-        return productMapper.findProductListByScoreOrder(categoryId, page, listSize);
-    }
-
-    /**
-     * 최신순으로 상품 목록 조회하기
-     */
-    private List<Product> findProductListByLatestOrder(Long categoryId, int page, int listSize) {
-        return productMapper.findProductListByLatestOrder(categoryId, listSize * (page - 1), listSize);
+        return SortType.valueOf(SortType.findSortType(sorter))
+                .sortProducts(productMapper, parameterBySort);
     }
 }
