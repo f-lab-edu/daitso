@@ -11,7 +11,7 @@ public class Category {
     @NotBlank(message = "이름을 입력해주세요")
     private String name;
 
-    private List<ProductDto> products = new ArrayList<>();
+    private List<Product> products = new ArrayList<>();
 
     private Category parent;
 
@@ -36,7 +36,7 @@ public class Category {
         return parent;
     }
 
-    public List<ProductDto> getProducts() {
+    public List<Product> getProducts() {
         return products;
     }
 
@@ -44,8 +44,8 @@ public class Category {
         return child;
     }
 
-    public void addProduct(ProductDto productDto) {
-        this.products.add(productDto);
+    public void addProduct(Product product) {
+        this.products.add(product);
     }
 
     private void setParent(Category parent) {

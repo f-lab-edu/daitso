@@ -1,13 +1,11 @@
 package com.flab.daitso.service;
 
 import com.flab.daitso.dto.product.Category;
-import com.flab.daitso.dto.product.ProductDto;
 import com.flab.daitso.error.exception.category.NotFoundCategoryException;
 import com.flab.daitso.mapper.CategoryMapper;
 import org.springframework.stereotype.Service;
 
 import java.util.HashMap;
-import java.util.List;
 
 @Service
 public class CategoryService {
@@ -66,10 +64,5 @@ public class CategoryService {
         return findCategory;
     }
 
-    /**
-     * 카테고리 아이디로 카테고리 안의 상품 목록 반환
-     */
-    public List<ProductDto> findProductListByCategoryId(Long categoryId) {
-        return categoryMapper.findProductListByCategoryId(categoryId);
-    }
+
 }

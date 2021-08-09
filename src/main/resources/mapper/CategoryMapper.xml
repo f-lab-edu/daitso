@@ -31,12 +31,4 @@
         FROM category
         WHERE name = #{name}
     </select>
-
-    <select id="findProductListByCategoryId" parameterType="Long" resultType="com.flab.daitso.dto.product.ProductDto">
-        SELECT p.product_id, p.name, p.price, p.content, p.created_at, p.updated_at, p.quantity
-        FROM product p
-        WHERE p.product_id IN
-              (SELECT pc.product_id FROM product_category pc JOIN category c ON pc.category_id = c.category_id
-               WHERE c.category_id = #{categoryId} OR c.parent_id = #{categoryId})
-    </select>
 </mapper>

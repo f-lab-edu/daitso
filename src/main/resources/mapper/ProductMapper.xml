@@ -2,15 +2,15 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
 <mapper namespace="com.flab.daitso.mapper.ProductMapper">
-    <select id="findProductByName" parameterType="String" resultType="com.flab.daitso.dto.product.ProductDto">
-        select product_id, name, price, content, created_at, updated_at, quantity
+    <select id="findProductByName" parameterType="String" resultType="com.flab.daitso.dto.product.Product">
+        select product_id, name, price, content, created_at, updated_at, quantity, score, main_image
         from product
         where deleted = 'N'
           and name = #{name}
     </select>
 
-    <select id="findProductById" parameterType="Long" resultType="com.flab.daitso.dto.product.ProductDto">
-        select product_id, name, price, content, created_at, updated_at, quantity
+    <select id="findProductById" parameterType="Long" resultType="com.flab.daitso.dto.product.Product">
+        select product_id, name, price, content, created_at, updated_at, quantity, score, main_image
         from product
         where deleted = 'N'
           and product_id = #{productId}
@@ -23,7 +23,7 @@
         where product_id = #{productId}
     </update>
 
-    <insert id="register" parameterType="com.flab.daitso.dto.product.ProductDto" useGeneratedKeys="true" keyProperty="productId">
+    <insert id="register" parameterType="com.flab.daitso.dto.product.Product" useGeneratedKeys="true" keyProperty="productId">
         INSERT INTO product (name, price, content)
         VALUES (#{name}, #{price}, #{content})
         <selectKey keyProperty="productId" resultType="Long">
@@ -43,25 +43,101 @@
         VALUES (#{categoryId}, #{productId})
     </insert>
 
-    <select id="findProductListByScoreRange" parameterType="Long" resultType="com.flab.daitso.dto.product.ProductDto">
+    <select id="findProductListByCategoryId" resultType="com.flab.daitso.dto.product.Product">
         SELECT p.product_id, p.name, p.price, p.content, p.created_at, p.updated_at, p.quantity, p.score, p.main_image
         FROM product p
-        WHERE (p.score &gt;= #{score} - 1) AND (p.score &lt; #{score}) AND (p.product_id IN
-            (SELECT pc.product_id FROM product_category pc JOIN category c ON pc.category_id = c.category_id
-                WHERE c.category_id = #{categoryId} OR c.parent_id = #{categoryId}))
+            JOIN product_category pc
+                ON p.product_id = pc.product_id
+            JOIN category c
+                ON c.category_id = pc.category_id
+        WHERE c.category_id = #{categoryId} OR c.parent_id = #{categoryId}
+        LIMIT #{listSize} OFFSET #{page}
     </select>
 
-    <select id="findProductListByPriceRange" parameterType="Long" resultType="com.flab.daitso.dto.product.ProductDto">
+    <select id="findProductListByLowPriceOrder" resultType="com.flab.daitso.dto.product.Product">
         SELECT p.product_id, p.name, p.price, p.content, p.created_at, p.updated_at, p.quantity, p.score, p.main_image
         FROM product p
-        WHERE (p.price &gt;= #{minPrice}) AND (p.price &lt; #{maxPrice}) AND (p.product_id IN
-            (SELECT pc.product_id FROM product_category pc JOIN category c ON pc.category_id = c.category_id
-                WHERE c.category_id = #{categoryId} OR c.parent_id = #{categoryId}))
+                 JOIN product_category pc
+                      ON p.product_id = pc.product_id
+                 JOIN category c
+                      ON c.category_id = pc.category_id
+        WHERE (c.category_id = #{categoryId} OR c.parent_id = #{categoryId})
+        ORDER BY p.price ASC, p.updated_at DESC
+        LIMIT #{listSize} OFFSET #{page}
     </select>
 
-    <select id="findProductListByLatestOrder" parameterType="Long" resultType="com.flab.daitso.dto.product.ProductDto">
+    <select id="findProductListByHighPriceOrder" resultType="com.flab.daitso.dto.product.Product">
         SELECT p.product_id, p.name, p.price, p.content, p.created_at, p.updated_at, p.quantity, p.score, p.main_image
         FROM product p
-        ORDER BY updated_at DESC
+                 JOIN product_category pc
+                      ON p.product_id = pc.product_id
+                 JOIN category c
+                      ON c.category_id = pc.category_id
+        WHERE (c.category_id = #{categoryId} OR c.parent_id = #{categoryId})
+        ORDER BY p.price DESC, p.updated_at DESC
+            LIMIT #{listSize} OFFSET #{page}
+    </select>
+
+    <select id="findProductListByScoreOrder" resultType="com.flab.daitso.dto.product.Product">
+        SELECT p.product_id, p.name, p.price, p.content, p.created_at, p.updated_at, p.quantity, p.score, p.main_image
+        FROM product p
+                 JOIN product_category pc
+                      ON p.product_id = pc.product_id
+                 JOIN category c
+                      ON c.category_id = pc.category_id
+        WHERE (c.category_id = #{categoryId} OR c.parent_id = #{categoryId})
+        ORDER BY p.score DESC, p.price ASC
+        LIMIT #{listSize} OFFSET #{page}
+    </select>
+
+    <select id="findProductListByLatestOrder" resultType="com.flab.daitso.dto.product.Product">
+        SELECT p.product_id, p.name, p.price, p.content, p.created_at, p.updated_at, p.quantity, p.score, p.main_image
+        FROM product p
+            JOIN product_category pc
+                ON p.product_id = pc.product_id
+            JOIN category c
+                ON c.category_id = pc.category_id
+        WHERE (c.category_id = #{categoryId} OR c.parent_id = #{categoryId})
+        ORDER BY p.updated_at DESC
+        LIMIT #{listSize} OFFSET #{page}
+    </select>
+
+    <select id="findProductListByDeliveryChargeType" resultType="com.flab.daitso.dto.product.Product">
+        SELECT p.product_id, p.name, p.price, p.content, p.created_at, p.updated_at, p.quantity, p.score, p.main_image
+        FROM product p
+            JOIN product_category pc
+                ON p.product_id = pc.product_id
+            JOIN category c
+                ON c.category_id = pc.category_id
+        WHERE (c.category_id = #{categoryId} OR c.parent_id = #{categoryId})
+        AND delivery_charge_type = #{deliveryChargeType}
+        LIMIT #{listSize} OFFSET #{page}
+    </select>
+
+    <select id="findProductListByNamePriceAndScoreRange" resultType="com.flab.daitso.dto.product.Product">
+        SELECT p.product_id, p.name, p.price, p.content, p.created_at, p.updated_at, p.quantity, p.score, p.main_image
+        FROM product p
+                 JOIN product_category pc
+                      ON p.product_id = pc.product_id
+                 JOIN category c
+                      ON c.category_id = pc.category_id
+        WHERE (c.category_id = #{categoryId} OR c.parent_id = #{categoryId})
+        AND p.name = #{name}
+        AND (p.price &gt;= #{minPrice}) AND (p.price &lt; #{maxPrice})
+          AND (p.score &gt;= #{score} - 1) AND (p.score &lt; #{score})
+        LIMIT #{listSize} OFFSET #{page}
+    </select>
+
+    <select id="findProductListByPriceAndScoreRange" resultType="com.flab.daitso.dto.product.Product">
+        SELECT p.product_id, p.name, p.price, p.content, p.created_at, p.updated_at, p.quantity, p.score, p.main_image
+        FROM product p
+                 JOIN product_category pc
+                      ON p.product_id = pc.product_id
+                 JOIN category c
+                      ON c.category_id = pc.category_id
+        WHERE (c.category_id = #{categoryId} OR c.parent_id = #{categoryId})
+        AND (p.price &gt;= #{minPrice}) AND (p.price &lt; #{maxPrice})
+          AND (p.score &gt;= #{score} - 1) AND (p.score &lt; #{score})
+        LIMIT #{listSize} OFFSET #{page}
     </select>
 </mapper>

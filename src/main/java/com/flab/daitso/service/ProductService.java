@@ -1,7 +1,9 @@
 package com.flab.daitso.service;
 
-import com.flab.daitso.dto.product.Category;
-import com.flab.daitso.dto.product.ProductDto;
+import com.flab.daitso.dto.delivery.DeliveryChargeType;
+import com.flab.daitso.dto.product.ParameterBySort;
+import com.flab.daitso.dto.product.Product;
+import com.flab.daitso.dto.product.SortType;
 import com.flab.daitso.error.exception.product.DuplicateProductNameException;
 import com.flab.daitso.mapper.ProductMapper;
 import com.flab.daitso.error.exception.product.SoldOutException;
@@ -27,8 +29,8 @@ public class ProductService {
     /**
      * 상품 Id로 product 찾기
      */
-    public ProductDto findProductById(Long productId) {
-        ProductDto product = productMapper.findProductById(productId);
+    public Product findProductById(Long productId) {
+        Product product = productMapper.findProductById(productId);
         if (product == null) {
             throw new NotFoundException();
         }
@@ -42,8 +44,8 @@ public class ProductService {
     /**
      * 상품명으로 product 찾기
      */
-    public ProductDto findProductByName(String name) {
-        ProductDto product = productMapper.findProductByName(name);
+    public Product findProductByName(String name) {
+        Product product = productMapper.findProductByName(name);
         if (product == null) {
             throw new NotFoundException();
         }
@@ -54,18 +56,18 @@ public class ProductService {
     /**
      * 상품 등록하기
      */
-    public Long registerProduct(ProductDto productDto) {
-        DuplicateProductName(productDto);
-        productMapper.register(productDto);
+    public Long registerProduct(Product product) {
+        DuplicateProductName(product);
+        productMapper.register(product);
 
-        return productDto.getProductId();
+        return product.getProductId();
     }
 
     /**
      * 중복된 상품명 검사
      */
-    private void DuplicateProductName(ProductDto productDto) {
-        ProductDto findProduct = productMapper.findProductByName(productDto.getName());
+    private void DuplicateProductName(Product product) {
+        Product findProduct = productMapper.findProductByName(product.getName());
         if (findProduct != null) {
             throw new DuplicateProductNameException();
         }
@@ -75,55 +77,53 @@ public class ProductService {
      * 상품 삭제하기
      */
     public void deleteProduct(Long productId) {
-        ProductDto findProduct = productMapper.findProductById(productId);
-
-        if (findProduct == null) {
+        int successfulRow = productMapper.delete(productId);
+        if (successfulRow <= 0) {
             throw new NotFoundException();
         }
-        productMapper.delete(productId);
     }
 
     /**
      * 카테고리에 상품 넣기
      */
-    public Category saveProductInCategory(Long categoryId, List<ProductDto> products) {
-        Category findCategory = categoryService.findById(categoryId);
-        for (ProductDto product : products) {
-            ProductDto findProduct = findProductById(product.getProductId());
-            findCategory.addProduct(findProduct);
-            productMapper.saveProductInCategory(categoryId, findProduct.getProductId());
-        }
-
-        return findCategory;
+    public void saveProductInCategory(Long categoryId, Long productId) {
+        productMapper.saveProductInCategory(categoryId, productId);
     }
 
     /**
-     * 별점 - 1 ~ 별점로 상품 리스트 조회하기
+     * 카테고리 아이디로 카테고리 안의 상품 목록 반환
      */
-    public List<ProductDto> findProductListByScoreRange(Long categoryId, Long score) {
-        if (score == 0) {
-            return categoryService.findProductListByCategoryId(categoryId);
-        }
-        return productMapper.findProductListByScoreRange(categoryId, score);
+    public List<Product> findProductListByCategoryId(Long categoryId, int page, int listSize) {
+        return productMapper.findProductListByCategoryId(categoryId, listSize * (page - 1), listSize);
     }
 
-    /**
-     * 가격으로 상품 리스트 조회하기
-     */
-    public List<ProductDto> findProductListByPriceRange(Long categoryId, Long minPrice, Long maxPrice) {
-        return productMapper.findProductListByPriceRange(categoryId, minPrice, maxPrice);
+    public List<Product> findProductListByDeliveryChargeType(Long categoryId, int page, int listSize, DeliveryChargeType deliveryChargeType) {
+        return productMapper.findProductListByDeliveryChargeType(categoryId, listSize * (page - 1), listSize, deliveryChargeType);
     }
 
     /**
      * 최신순으로 상품 리스트 조회하기
      * sorter
-     * 0 --> 최신순
-     * 1 -->
+     * latestOrder --> 최신순
+     * lowPriceOrder --> 낮은가격순
+     * highPriceOrder --> 높은가격순
+     * scoreOrder --> 별점순
      */
-    public List<ProductDto> findProductListByLatestOrder(Long categoryId, Long sorter) {
-        if (sorter == 0) {
-            return productMapper.findProductListByLatestOrder(categoryId);
-        }
-        return productMapper.findProductListByLatestOrder(categoryId);
+    public List<Product> findProductListBySort(Long categoryId, int page, int listSize, String sorter) {
+        int convertedPage = listSize * (page - 1);
+        ParameterBySort parameterBySort = new ParameterBySort(categoryId, convertedPage, listSize);
+
+        return SortType.valueOf(SortType.findSortType(sorter))
+                .sortProducts(productMapper, parameterBySort);
+    }
+
+    public List<Product> findProductListByNamePriceAndScoreRange(Long categoryId, int page, int listSize, String name,
+                                                            Long minPrice, Long maxPrice, Long score) {
+        return productMapper.findProductListByNamePriceAndScoreRange(categoryId, page, listSize, name, minPrice, maxPrice, score);
+    }
+
+    public List<Product> findProductListByPriceAndScoreRange(Long categoryId, int page, int listSize,
+                                                                 Long minPrice, Long maxPrice, Long score) {
+        return productMapper.findProductListByPriceAndScoreRange(categoryId, page, listSize, minPrice, maxPrice, score);
     }
 }
