@@ -29,16 +29,6 @@ public interface ProductMapper {
     List<Product> findProductListByCategoryId(@Param("categoryId") Long categoryId, @Param("page") int page, @Param("listSize") int listSize);
 
     /**
-     * 별점 범위로 상품 목록 조회
-     */
-    List<Product> findProductListByScoreRange(@Param("categoryId") Long categoryId, @Param("page") int page, @Param("listSize") int listSize, @Param("score") Long score);
-
-    /**
-     * 가격 범위로 상품 목록 조회
-     */
-    List<Product> findProductListByPriceRange(@Param("categoryId") Long categoryId, @Param("page") int page, @Param("listSize") int listSize, @Param("minPrice") Long minPrice, @Param("maxPrice") Long maxPrice);
-
-    /**
      * 낮은 가격순으로 상품 목록 조회
      */
     List<Product> findProductListByLowPriceOrder(@Param("categoryId") Long categoryId, @Param("page") int page, @Param("listSize") int listSize);
@@ -62,4 +52,22 @@ public interface ProductMapper {
      * 배송 타입으로 상품 목록 조회
      */
     List<Product> findProductListByDeliveryChargeType(@Param("categoryId") Long categoryId, @Param("page") int page, @Param("listSize") int listSize, DeliveryChargeType deliveryChargeType);
+
+    /**
+     * 상품 목록 이름, 가격, 별점순으로 조회 (선택 가능)
+     */
+    List<Product> findProductListByNamePriceAndScoreRange(@Param("categoryId") Long categoryId,
+                                                     @Param("page") int page,
+                                                     @Param("listSize") int listSize,
+                                                     @Param("name") String name,
+                                                     @Param("minPrice") Long minPrice,
+                                                     @Param("maxPrice") Long maxPrice,
+                                                     @Param("score") Long score);
+
+    List<Product> findProductListByPriceAndScoreRange(@Param("categoryId") Long categoryId,
+                                                          @Param("page") int page,
+                                                          @Param("listSize") int listSize,
+                                                          @Param("minPrice") Long minPrice,
+                                                          @Param("maxPrice") Long maxPrice,
+                                                          @Param("score") Long score);
 }

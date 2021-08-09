@@ -97,23 +97,6 @@ public class ProductService {
         return productMapper.findProductListByCategoryId(categoryId, listSize * (page - 1), listSize);
     }
 
-    /**
-     * 별점 - 1 ~ 별점 범위로 상품 리스트 조회하기
-     */
-    public List<Product> findProductListByScoreRange(Long categoryId, int page, int listSize, Long score) {
-        if (score == 0) {
-            return findProductListByCategoryId(categoryId, listSize * (page - 1), listSize);
-        }
-        return productMapper.findProductListByScoreRange(categoryId, listSize * (page - 1), listSize, score);
-    }
-
-    /**
-     * 가격 범위로 상품 리스트 조회하기
-     */
-    public List<Product> findProductListByPriceRange(Long categoryId, int page, int listSize, Long minPrice, Long maxPrice) {
-        return productMapper.findProductListByPriceRange(categoryId, listSize * (page - 1), listSize, minPrice, maxPrice);
-    }
-
     public List<Product> findProductListByDeliveryChargeType(Long categoryId, int page, int listSize, DeliveryChargeType deliveryChargeType) {
         return productMapper.findProductListByDeliveryChargeType(categoryId, listSize * (page - 1), listSize, deliveryChargeType);
     }
@@ -132,5 +115,15 @@ public class ProductService {
 
         return SortType.valueOf(SortType.findSortType(sorter))
                 .sortProducts(productMapper, parameterBySort);
+    }
+
+    public List<Product> findProductListByNamePriceAndScoreRange(Long categoryId, int page, int listSize, String name,
+                                                            Long minPrice, Long maxPrice, Long score) {
+        return productMapper.findProductListByNamePriceAndScoreRange(categoryId, page, listSize, name, minPrice, maxPrice, score);
+    }
+
+    public List<Product> findProductListByPriceAndScoreRange(Long categoryId, int page, int listSize,
+                                                                 Long minPrice, Long maxPrice, Long score) {
+        return productMapper.findProductListByPriceAndScoreRange(categoryId, page, listSize, minPrice, maxPrice, score);
     }
 }
